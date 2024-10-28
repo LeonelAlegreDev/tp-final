@@ -1,0 +1,16 @@
+@if(isComponentReady){
+    <div id="welcome">
+        <img src="../../../assets/logo.png">
+        <h1>Clínica Online</h1>
+        
+        <h2>Inicir Sesión</h2>
+        <button routerLink="/login" routerLinkActive="active-route">Ingresar</button>
+        
+        <h2>Crear cuenta</h2>
+        <button routerLink="/signup" routerLinkActive="active-route">Registrarse</button>
+
+    </div>
+}
+@else {
+    <app-loader></app-loader>
+}
