@@ -1,9 +1,13 @@
 :root{
+    /* PALETA DE COLORES */
     --primary-color: #38b449;
     --darker-color: #353435;
     --secondary-color: #a7c0d4;
     --background-color: #f4faf4;
     --accent-color: #7f83c0;
+
+    /* INDICADORES */
+    --error-color: rgb(141, 0, 0);
 }
 *{
     margin: 0;
@@ -13,5 +17,9 @@
 body{
     width: 100%;
     min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     background-color: var(--background-color);
 }
