@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Storage, ref, uploadBytes } from '@angular/fire/storage';
 import { Paciente } from '../../interfaces/paciente';
 import { FireAuthService } from '../../servicios/fire-auth.service';
+import { PacienteService } from '../../servicios/paciente.service';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-signup',
@@ -27,6 +29,7 @@ export class SignupComponent {
   @ViewChild('accountF') accountF!: ElementRef;
   @ViewChild('personalF') personalF!: ElementRef;
   @ViewChild('fotosF') fotosF!: ElementRef;
+  pacienteService: PacienteService = inject(PacienteService);
 
   accountForm: FormGroup;
   personalForm: FormGroup;
@@ -173,15 +176,16 @@ export class SignupComponent {
             await this.fireAuthService.Signup(user, this.contrasena?.value);
             console.log("Usuario creado con Fire Auth: ", this.fireAuthService.user);
 
-            // Carga la foto de perfil
-            console.log(this.fotoPerfil)
             let fileName = "perfil." + this.fotoPerfil.type.split('/')[1];
             let storageRef = ref(this.storage, `${this.fireAuthService.user?.id}/fotos/${fileName}`);
 
-            uploadBytes(storageRef , this.fotoPerfil)
+            await uploadBytes(storageRef , this.fotoPerfil)
             .then((response) => {
               console.log("Foto de perfil subida correctamente");
-              console.log(response);
+              // Guardar la URL de la foto de perfil en una variable
+              let fullPath = encodeURIComponent(response.metadata.fullPath);
+              let bucket = response.metadata.bucket;
+              this.fireAuthService.user!.fotoPerfil = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${fullPath}?alt=media`;
             })
             .catch((error) => {
               console.log("Se produjo un error al subir la foto de perfil");
@@ -191,15 +195,24 @@ export class SignupComponent {
             fileName = "dni." + this.fotoDni.type.split('/')[1];
             storageRef = ref(this.storage, `${this.fireAuthService.user?.id}/fotos/${fileName}`);
 
-            uploadBytes(storageRef, this.fotoDni)
+            await uploadBytes(storageRef, this.fotoDni)
             .then((response) => {
               console.log("Foto de DNI subida correctamente");
-              console.log(response);
+              let fullPath = encodeURIComponent(response.metadata.fullPath);
+              let bucket = response.metadata.bucket;
+              this.fireAuthService.user!.fotoDni = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${fullPath}?alt=media`;
             })
             .catch((error) => {
               console.log("Se produjo un error al subir la foto del DNI");
               throw error;
             });
+
+
+            // Crear el documento en la base de datos
+            const res = await this.pacienteService.Create(this.fireAuthService.user!);
+            console.log("Paciente creado con ID: ", res);
+            console.log("ID Fire Auth: ", this.fireAuthService.user?.id);
+
           }
           catch(e: any){
             if(e.message === "Email ya en uso"){
@@ -312,12 +325,11 @@ export class SignupComponent {
   UploadFoto($event: any) {
     const file = $event.target.files[0];
 
-    if(file.type !== 'image/jpeg' && file.type !== 'image/png'){
+    if(file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/jpg'){
       console.log('Error: Formato de imagen incorrecto');
       return;
     }
     this.fotoPerfil = file;
-    console.log(this.fotoPerfil);
   }
 
   GetErrorMessage(formGroupName: string, controlName: string): string {

@@ -113,7 +113,7 @@
             <!-- FOTO DE PERFIL -->
             <div class="input-box">
               <label class="details">Foto de perfil</label>
-              <input type="file" formControlName="fotoPerfil" required>
+              <input type="file" formControlName="fotoPerfil" required (change)="UploadFoto($event)">
               <span class="error" *ngIf="this.fotosForm.get('fotoPerfil')?.invalid && (this.fotosForm.get('fotoPerfil')?.touched || this.fotosForm.get('fotoPerfil')?.dirty)">
                 {{ GetErrorMessage("fotosForm", 'fotoPerfil') }}
               </span>
