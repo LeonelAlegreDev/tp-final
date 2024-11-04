@@ -15,10 +15,10 @@
     box-sizing: border-box;
 }
 body{
-    width: 100%;
+    width: 100vw;
     min-height: 100svh;
+    height: 100svh;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: var(--background-color);

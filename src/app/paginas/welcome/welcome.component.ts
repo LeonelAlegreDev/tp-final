@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LoaderComponent } from "../../componenetes/loader/loader.component";
+import { LoaderComponent } from "../../componentes/loader/loader.component";
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({

@@ -1,0 +1,140 @@
+<div id="wrapper">
+  <h1>Registrarse</h1>
+  <!-- BARRA DE CARGA -->
+  <div id="steps">
+    <ul class="icons">
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+    </ul>
+    <ul class="bars back">
+      <li></li>
+      <li></li>
+    </ul>
+    <ul class="bars front">
+      <li></li>
+      <li></li>
+    </ul>
+  </div>
+
+  <div class="content">
+    <div class="row">
+      <!-- FORMULARIO DE REGISTRO -->
+      <div id="accountF" class="form" [formGroup]="accountForm" #accountF>
+        <!-- TITULO -->
+        <div class="title">Información de la Cuenta</div>
+        <!-- INFORMACION PERSONAL -->
+        <div class="user-details">
+          <!-- NOMBRE -->
+          <div class="input-box">
+            <label class="details">Nombre</label>
+            <input type="text" formControlName="nombre" placeholder="Ingrese su nombre" required>
+            <span class="error" *ngIf="nombre?.invalid && (nombre?.touched || nombre?.dirty)">
+              {{ GetErrorMessage("accountForm", 'nombre') }}
+            </span>
+          </div>
+          <!-- APELLIDO -->
+          <div class="input-box">
+            <span class="details">Apellido</span>
+            <input type="text" formControlName="apellido" placeholder="Ingrese su apellido" required>
+            <span class="error" *ngIf="apellido?.invalid && (apellido?.touched || apellido?.dirty)">
+              {{ GetErrorMessage("accountForm", 'apellido') }}
+            </span>
+          </div>
+          <!-- EMAIL -->
+          <div class="input-box">
+            <span class="details">Email</span>
+            <input type="email" formControlName="email" placeholder="Ingrese su email" required>
+            <span class="error" *ngIf="email?.invalid && (email?.touched || email?.dirty)">
+              {{ GetErrorMessage("accountForm", 'email') }}
+            </span>
+          </div>
+          <!-- CONTRASEÑA -->
+          <div class="input-box">
+            <span class="details">Contraseña</span>
+            <input type="password" formControlName="contrasena" placeholder="Ingrese su contraseña" required>
+            <span class="error" *ngIf="contrasena?.invalid && (contrasena?.touched || contrasena?.dirty)">
+              {{ GetErrorMessage("accountForm", 'contrasena') }}
+            </span>
+          </div>
+
+        </div>
+
+        <!-- Submit button -->
+        <!-- <div class="submit">
+        <input type="submit" value="Registrarse">
+      </div> -->
+      </div>
+
+      <!-- FORMULARIO PERSONAL -->
+      <div id="personalF" class="form" [formGroup]="personalForm" #personalF>
+        <!-- TITULO -->
+        <div class="title">Información Personal</div>
+        <!-- INFORMACION PERSONAL -->
+        <div class="user-details">
+          <!-- DNI -->
+          <div class="input-box">
+            <label class="details">DNI</label>
+            <input type="text" formControlName="dni" placeholder="Ingrese su DNI sin puntos o guiones" required>
+            <span class="error" *ngIf="dni?.invalid && (dni?.touched || dni?.dirty)">
+              {{ GetErrorMessage("personalForm", 'dni') }}
+            </span>
+          </div>
+          <!-- OBRA SOCIAL -->
+          <div class="input-box">
+            <span class="details">Obra social</span>
+            <input type="text" formControlName="obraSocial" placeholder="Ingrese su obra social" required>
+            <span class="error" *ngIf="obraSocial?.invalid && (obraSocial?.touched || obraSocial?.dirty)">
+              {{ GetErrorMessage("personalForm", 'obraSocial') }}
+            </span>
+          </div>
+          <!-- EMAIL -->
+          <div class="input-box">
+            <span class="details">Edad</span>
+            <input type="text" formControlName="edad" placeholder="Ingrese su edad" required>
+            <span class="error" *ngIf="edad?.invalid && (edad?.touched || edad?.dirty)">
+              {{ GetErrorMessage("personalForm", 'edad') }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Submit button -->
+        <!-- <div class="submit">
+        <input type="submit" value="Registrarse">
+      </div> -->
+      </div>
+
+      <!-- FOTOS -->
+      <div id="fotosF" class="form" [formGroup]="fotosForm" #fotosF>
+        <!-- TITULO -->
+        <div class="title">Carga de fotos </div>
+        <!-- FOTOS -->
+        <div class="user-details">
+          <!-- FOTO DE PERFIL -->
+          <div class="input-box">
+            <label class="details">Foto de perfil</label>
+            <input type="file" formControlName="fotoPerfil" required (change)="UploadFoto($event)">
+            <span class="error"
+              *ngIf="this.fotosForm.get('fotoPerfil')?.invalid && (this.fotosForm.get('fotoPerfil')?.touched || this.fotosForm.get('fotoPerfil')?.dirty)">
+              {{ GetErrorMessage("fotosForm", 'fotoPerfil') }}
+            </span>
+          </div>
+          <!-- FOTO DE DNI -->
+          <div class="input-box">
+            <span class="details">Foto del DNI</span>
+            <input type="file" formControlName="fotoDni" required (change)="UploadDni($event)">
+            <span class="error"
+              *ngIf="this.fotosForm.get('fotoDni')?.invalid && (this.fotosForm.get('fotoDni')?.touched || this.fotosForm.get('fotoDni')?.dirty)">
+              {{ GetErrorMessage("fotosForm", 'fotoDni') }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="botones">
+      <button id="btn-prev" class="next-prev desactivated" (click)="PrevStep()">Atras</button>
+      <button class="next-prev" (click)="NextStep()">Siguiente</button>
+    </div>
+  </div>
+</div>
