@@ -1,6 +1,12 @@
 <div class="wrapper">
   <div id="container" #container>
     <div class="viewport" #viewport></div>
+    @if(!selectedType){
+      <div class="select-type">
+        <button (click)='SelectForm("paciente")'>Crear cuenta de Paciente</button>
+        <button (click)='SelectForm("especialista")'>Crear cuenta de Especialista</button>
+      </div>
+    }
   </div>
 </div>
 

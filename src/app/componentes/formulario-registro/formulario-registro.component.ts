@@ -7,6 +7,7 @@ import { FireAuthService } from '../../servicios/fire-auth.service';
 import { PacienteService } from '../../servicios/paciente.service';
 import { inject } from '@angular/core';
 import { LoaderComponent } from "../../componentes/loader/loader.component";
+import { last } from 'rxjs';
 
 @Component({
   selector: 'app-formulario-registro',
@@ -21,6 +22,8 @@ export class FormularioRegistroComponent {
   @ViewChild('fotosF') fotosF!: ElementRef;
   @Output() loaded = new EventEmitter<void>();
   @Output() sending = new EventEmitter<void>();
+  @Output() success = new EventEmitter<void>();
+  @Output() goBack = new EventEmitter<void>();
   pacienteService: PacienteService = inject(PacienteService);
 
   accountForm: FormGroup;
@@ -68,11 +71,6 @@ export class FormularioRegistroComponent {
   };
   fotoDni: any;
   fotoPerfil: any;
-  orquestador: any = {
-    estados: ['loading', 'form', 'validating', 'error', 'success'],
-    estadoActual: 'loading',
-  }
-
 
   get nombre() { return this.accountForm.get('nombre'); }
   get apellido() { return this.accountForm.get('apellido'); }
@@ -105,8 +103,9 @@ export class FormularioRegistroComponent {
 
   ngAfterViewInit() {
     this.loaded.emit();
-    this.orquestador.estadoActual = this.orquestador.estados[1];
+    // this.orquestador.estadoActual = this.orquestador.estados[1];
   }
+  
   async NextStep() {
     switch (this.currentStep) {
       case 1:
@@ -173,14 +172,20 @@ export class FormularioRegistroComponent {
             obraSocial: this.obraSocial?.value,
           }
           try{
+            // Cambia el icono de la barra de progreso
+            const icon = document.querySelector('.icons li:nth-child(3)');
+            icon!.classList.remove('deschargedIcon');
+            icon!.classList.add('chargedIcon');
+
             console.log("Creando paciente");
             // Crear el usuario en Firebase Auth
             await this.fireAuthService.Signup(user, this.contrasena?.value);
+            console.log("Usuario creado en Firebase Auth");
 
+            // Una vez creado el usuario en Firebase Auth, se guardan los datos en la base de datos
             this.sending.emit();
             
             const userDetails = document.getElementsByClassName('user-details');
-            console.log(userDetails);
 
             // Subir las fotos a Firebase Storage
             let fileName = "perfil." + this.fotoPerfil.type.split('/')[1];
@@ -214,17 +219,12 @@ export class FormularioRegistroComponent {
               throw error;
             });
 
-
             // Crear el documento en la base de datos
             const res = await this.pacienteService.Create(this.fireAuthService.user!);
-            console.log("Paciente creado con ID: ", res);
-            console.log("ID Fire Auth: ", this.fireAuthService.user?.id);
+            console.log("Paciente creado en la base de datos");
 
-            // Cambia el icono de la barra de progreso
-            const iconElement = document.querySelector('.icons li:nth-child(3)');
-            iconElement!.classList.remove('deschargedIcon');
-            iconElement!.classList.add('chargedIcon');
-
+            // Emitir evento de éxito
+            this.success.emit();
           }
           catch(e: any){
             if(e.message === "Email ya en uso"){
@@ -280,12 +280,15 @@ export class FormularioRegistroComponent {
         case 3:
           barElement = document.querySelector('.front li:nth-child(2)')!;
           iconElement = document.querySelector('.icons li:nth-child(2)')!;
+          let lastIcon = document.querySelector('.icons li:nth-child(3)')!;
           
           iconElement!.classList.remove('chargedIcon');
           barElement!.classList.remove('chargedBar');
+          lastIcon!.classList.remove('chargedIcon');
 
           iconElement!.classList.add('deschargedIcon');
           barElement!.classList.add('deschardedBar');
+          lastIcon!.classList.add('deschargedIcon');
           
           this.renderer.setStyle(this.fotosF.nativeElement, 'transform', 'translateX(100%)');
           this.renderer.setStyle(this.personalF.nativeElement, 'transform', 'translateX(0%)');
@@ -296,6 +299,9 @@ export class FormularioRegistroComponent {
           this.currentStep--;
           break;
       }
+    }
+    else{
+      this.goBack.emit();
     }
   }
 

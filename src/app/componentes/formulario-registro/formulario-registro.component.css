@@ -15,6 +15,9 @@ h1{
     text-align: center;
     margin: 8px 0;
 }
+.title{
+    font-size: 1.2em;
+}
 #steps{
     width: 100%;
     height: 30px;
@@ -261,12 +264,6 @@ h1{
         background-color: var(--primary-color);
         cursor: pointer;
         box-shadow: 0 0 5px 2px var(--darker-color);
-    }
-    .desactivated{
-        background-color: rgba(0, 0, 0, 0.3);
-        color: rgba(0, 0, 0, 0.5);
-        cursor: not-allowed;
-        box-shadow: 0 0 0 0;
     }
 }
 .goLeft{
