@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-loader',
@@ -8,5 +8,9 @@ import { Component } from '@angular/core';
   styleUrl: './loader.component.css'
 })
 export class LoaderComponent {
+  @Output() loaded = new EventEmitter<void>();
 
+  ngAfterViewInit() {
+    this.loaded.emit();
+  }
 }

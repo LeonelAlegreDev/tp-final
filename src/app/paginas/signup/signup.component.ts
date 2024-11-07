@@ -17,15 +17,21 @@ export class SignupComponent {
 
   constructor() { }
 
-  
+  ngOnInit() {
+
+  }
+
   ngAfterViewInit() {
-    // this.CreateLoader();
+    this.CreateLoader();
     this.loadFormRegistro();
+    this.OcultarComponente(this.formRegistroCR!);
   }
 
   CreateLoader() {
-    this.vcr.clear();
     this.loaderCR = this.vcr.createComponent(LoaderComponent);
+    this.loaderCR.instance.loaded.subscribe(() => {
+      // console.log('Loader component has finished loading its styles.');
+    });
   }
 
   DeleteLoader() {
@@ -33,9 +39,29 @@ export class SignupComponent {
   }
 
   loadFormRegistro() {
-    // this.DeleteLoader();
-    this.vcr.clear();
     this.formRegistroCR = this.vcr.createComponent(FormularioRegistroComponent);
+    
+    // Se ejecuta cuando el componente se ha cargado completamente
+    this.formRegistroCR.instance.loaded.subscribe(() => {
+      this.MostrarComponente(this.formRegistroCR!);
+      this.DeleteLoader();
+    });
+
+    // Se ejecuta cuando el componente está enviando los datos
+    this.formRegistroCR.instance.sending.subscribe(() => {
+      this.CreateLoader();
+      this.OcultarComponente(this.formRegistroCR!);
+    });
+  }
+  MostrarComponente(componente: ComponentRef<any>) {
+    if(componente.location){
+      componente.location.nativeElement.style.opacity = 1;
+    }
+  }
+  OcultarComponente(componente: ComponentRef<any>) {
+    if(componente.location){
+      componente.location.nativeElement.style.opacity = 0;
+    }
   }
 }
 

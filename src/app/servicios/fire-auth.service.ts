@@ -43,4 +43,16 @@ export class FireAuthService {
       throw new Error(this.msjError);
     }
   }
+
+  async DeleteUser() {
+    try {
+      if (this.user) {
+        await this.auth.currentUser?.delete();
+        this.isLoggedIn = false;
+        this.user = undefined;
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
 }

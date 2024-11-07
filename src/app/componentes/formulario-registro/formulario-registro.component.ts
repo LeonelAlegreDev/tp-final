@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component, ElementRef, Inject, Renderer2, ViewChild, ViewChildren, Injector, viewChild } from '@angular/core';
+import { Component, ElementRef, Inject, Renderer2, ViewChild, ViewChildren, Injector, viewChild, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Storage, ref, uploadBytes } from '@angular/fire/storage';
 import { Paciente } from '../../interfaces/paciente';
@@ -19,6 +19,8 @@ export class FormularioRegistroComponent {
   @ViewChild('accountF') accountF!: ElementRef;
   @ViewChild('personalF') personalF!: ElementRef;
   @ViewChild('fotosF') fotosF!: ElementRef;
+  @Output() loaded = new EventEmitter<void>();
+  @Output() sending = new EventEmitter<void>();
   pacienteService: PacienteService = inject(PacienteService);
 
   accountForm: FormGroup;
@@ -56,10 +58,12 @@ export class FormularioRegistroComponent {
       required: 'Obra social es requerida.'
     },
     fotoDni: {
-      required: 'Debe subir una foto del DNI'
+      required: 'La foto del DNI es obligatoria.',
+      format: 'Formato de imagen invalido. Formatos permitidos: .jpeg, .jpg, .png'
     },
     fotoPerfil: {
-      required: 'Debe subir una foto de perfil'
+      required: 'La foto de perfil es obligatoria.',
+      format: 'Formato de imagen invalido. Formatos permitidos: .jpeg, .jpg, .png'
     }
   };
   fotoDni: any;
@@ -99,10 +103,9 @@ export class FormularioRegistroComponent {
     });
   }
 
-  NgAfterViewInit() {
-    console.log("NgOnInit");
+  ngAfterViewInit() {
+    this.loaded.emit();
     this.orquestador.estadoActual = this.orquestador.estados[1];
-
   }
   async NextStep() {
     switch (this.currentStep) {
@@ -170,8 +173,14 @@ export class FormularioRegistroComponent {
             obraSocial: this.obraSocial?.value,
           }
           try{
+            console.log("Creando paciente");
             // Crear el usuario en Firebase Auth
             await this.fireAuthService.Signup(user, this.contrasena?.value);
+
+            this.sending.emit();
+            
+            const userDetails = document.getElementsByClassName('user-details');
+            console.log(userDetails);
 
             // Subir las fotos a Firebase Storage
             let fileName = "perfil." + this.fotoPerfil.type.split('/')[1];
@@ -223,6 +232,9 @@ export class FormularioRegistroComponent {
               this.PrevStep();
               this.PrevStep();
             }
+            if(this.fireAuthService.user){
+              await this.fireAuthService.DeleteUser();
+            }
             console.log(e.message)
             throw e;
           }
@@ -237,7 +249,6 @@ export class FormularioRegistroComponent {
   }
 
   PrevStep(){
-    console.log(this.currentStep);
     if(this.currentStep > 1){
       let barElement: Element;
       let iconElement: Element;
@@ -288,48 +299,24 @@ export class FormularioRegistroComponent {
     }
   }
 
-  // LISTA DE PASOS:
-  /**
-   * 1. El usuario completa el primer formulario, con su 
-   * nombre, apellido, email y contraseña.
-   * 2. El usuario completa el segundo formulario, con su
-   * obra social, DNI y edad.
-   * 3. El usuario completa el tercer formulario, con sus
-   * fotos de perfil y DNI.
-   * 
-   * Primero se debe crear un usuario con la firebase auth
-   * Luego crear un documento que tenga como ID del documento, el mismo ID que el usuario de firebase auth
-   * Luego subir las fotos a firebase storage en la ruta {idPaciente}/fotos/
-   */
-
   UploadDni($event: any) {
     const file = $event.target.files[0];
 
     if(file.type !== 'image/jpeg' && file.type !== 'image/png'){
-      console.log('Error: Formato de imagen incorrecto');
+      this.fotosForm.get('errorFotoDni')?.setValue(this.errorMessages['fotoDni']['format']);
+      this.fotosForm.get('fotoDni')?.setErrors({ format: true });
       return;
     }
-    const fileName = "dni." + file.type.split('/')[1];
 
     this.fotoDni = file;
-
-    // cambiar nombre de la ruta por id del paciente
-    // const storageRef = ref(this.storage, `${this.nombre?.value}/fotos/${fileName}`);
-
-    // uploadBytes(storageRef, file)
-    //   .then((response) => {
-    //     console.log(response);
-    //   })
-    //   .catch((error) => {
-    //     console.log("Se produjo un error al subir la foto del DNI");
-    //     throw error;
-    //   });
   }
+
   UploadFoto($event: any) {
     const file = $event.target.files[0];
 
     if(file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/jpg'){
-      console.log('Error: Formato de imagen incorrecto');
+      this.fotosForm.get('errorFotoPerfil')?.setValue(this.errorMessages['fotoPerfil']['format']);
+      this.fotosForm.get('fotoPerfil')?.setErrors({ format: true });
       return;
     }
     this.fotoPerfil = file;
