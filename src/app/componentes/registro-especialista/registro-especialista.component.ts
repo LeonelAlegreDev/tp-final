@@ -3,19 +3,20 @@ import { Component, ElementRef, Inject, Renderer2, ViewChild, ViewChildren, Inje
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Storage, ref, uploadBytes } from '@angular/fire/storage';
 import { Paciente } from '../../interfaces/paciente';
+import { Especialista } from '../../interfaces/especialista';
 import { FireAuthService } from '../../servicios/fire-auth.service';
 import { PacienteService } from '../../servicios/paciente.service';
 import { inject } from '@angular/core';
 import { LoaderComponent } from "../../componentes/loader/loader.component";
 
 @Component({
-  selector: 'app-formulario-registro',
+  selector: 'app-registro-especialista',
   standalone: true,
   imports: [ReactiveFormsModule, NgIf, LoaderComponent],
-  templateUrl: './formulario-registro.component.html',
-  styleUrl: './formulario-registro.component.css'
+  templateUrl: './registro-especialista.component.html',
+  styleUrl: './registro-especialista.component.css'
 })
-export class FormularioRegistroComponent {
+export class RegistroEspecialistaComponent {
   @ViewChild('accountF') accountF!: ElementRef;
   @ViewChild('personalF') personalF!: ElementRef;
   @ViewChild('fotosF') fotosF!: ElementRef;

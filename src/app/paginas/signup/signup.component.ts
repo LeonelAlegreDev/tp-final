@@ -2,6 +2,7 @@ import { Component, ComponentRef, ElementRef, ViewChild, viewChild, ViewContaine
 import { LoaderComponent } from "../../componentes/loader/loader.component";
 import { FormularioRegistroComponent } from "../../componentes/formulario-registro/formulario-registro.component";
 import { ModalComponent } from '../../componentes/modal/modal.component';
+import { RegistroEspecialistaComponent } from '../../componentes/registro-especialista/registro-especialista.component';
 
 @Component({
   selector: 'app-signup',
@@ -13,9 +14,11 @@ import { ModalComponent } from '../../componentes/modal/modal.component';
 export class SignupComponent {
   @ViewChild('viewport', { read: ViewContainerRef }) vcr!: ViewContainerRef;
   @ViewChild('container') containerRef!: ElementRef;
-  private loaderCR?: ComponentRef<LoaderComponent>;
   private formRegistroCR?: ComponentRef<FormularioRegistroComponent>;
+  private formRegEspCR?: ComponentRef<RegistroEspecialistaComponent>;
   private modalCR?: ComponentRef<ModalComponent>;
+  private loaderCR?: ComponentRef<LoaderComponent>;
+
   selectedType: boolean = false;
 
   constructor() { }
@@ -27,10 +30,10 @@ export class SignupComponent {
 
   SelectForm(tipo: string){
     if(tipo === 'paciente'){
-      console.log('paciente');
+      this.selectedType = true;
+      this.CreateFormPac();
     }
     if(tipo === 'especialista'){
-      console.log('Especialista');
       this.selectedType = true;
       this.CreateFormEsp();
     }
@@ -43,7 +46,7 @@ export class SignupComponent {
     });
   }
 
-  CreateFormEsp() {
+  CreateFormPac() {
     // Crea el formulario y lo oculta
     this.formRegistroCR = this.vcr.createComponent(FormularioRegistroComponent);
     this.OcultarComponente(this.formRegistroCR!);
@@ -77,6 +80,40 @@ export class SignupComponent {
     });
   }
 
+  CreateFormEsp() {
+    // Crea el formulario y lo oculta
+    this.formRegEspCR = this.vcr.createComponent(RegistroEspecialistaComponent);
+    this.OcultarComponente(this.formRegEspCR!);
+
+    // Se ejecuta cuando el formulario se ha cargado completamente
+    this.formRegEspCR.instance.loaded.subscribe(() => {
+      // Muestra el formulario y destruye el loader
+      this.MostrarComponente(this.formRegEspCR!);
+      this.loaderCR?.destroy();
+    });
+
+    // Se ejecuta cuando el formulario está enviando los datos
+    this.formRegEspCR.instance.sending.subscribe(() => {
+      this.CreateLoader();
+      this.OcultarComponente(this.formRegEspCR!);
+    });
+
+    // Se ejecuta cuando el formulario ha enviado los datos con éxito
+    this.formRegEspCR.instance.success.subscribe(() => {
+      this.loaderCR?.destroy();
+      this.formRegEspCR?.destroy();
+      this.CreateModal();
+      this.modalCR!.instance.title = "Registro Exitoso";
+      console.log(this.modalCR);
+    });
+
+    // Se ejecuta cuando el formulario regresa a la vista principal
+    this.formRegEspCR.instance.goBack.subscribe(() => {
+      this.formRegEspCR?.destroy();
+      this.selectedType = false;
+    });
+  }
+
   CreateModal() {
     this.modalCR = this.vcr.createComponent(ModalComponent);
     this.OcultarComponente(this.modalCR!);
@@ -86,6 +123,7 @@ export class SignupComponent {
       this.MostrarComponente(this.modalCR!);
     });
   }
+
   MostrarComponente(componente: ComponentRef<any>) {
     if(componente.location){
       componente.location.nativeElement.style.opacity = 1;
