@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Paciente } from '../interfaces/paciente';
 import { createUserWithEmailAndPassword, Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
+import { Especialista } from '../interfaces/especialista';
 
 @Injectable({
   providedIn: 'root'
@@ -10,11 +11,11 @@ export class FireAuthService {
   get IsLoggedIn() { return this.isLoggedIn; }
   public msjError = "";
   
-  user?: Paciente;
+  user?: Paciente | Especialista;
 
   constructor(private auth: Auth) { }
 
-  async Signup(user: Paciente, password: string) {
+  async Signup(user: Paciente | Especialista, password: string) {
     try {
       const res = await createUserWithEmailAndPassword(this.auth, user.email, password);
       if (res.user.email !== null && res.user.uid !== null) {

@@ -11,7 +11,7 @@ import { LoaderComponent } from "../../componentes/loader/loader.component";
 @Component({
   selector: 'app-formulario-registro',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf, LoaderComponent],
+  imports: [ReactiveFormsModule, NgIf],
   templateUrl: './formulario-registro.component.html',
   styleUrl: './formulario-registro.component.css'
 })
@@ -211,7 +211,7 @@ export class FormularioRegistroComponent {
               console.log("Foto de DNI subida correctamente");
               let fullPath = encodeURIComponent(response.metadata.fullPath);
               let bucket = response.metadata.bucket;
-              this.fireAuthService.user!.fotoDni = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${fullPath}?alt=media`;
+              (this.fireAuthService.user as Paciente).fotoDni = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${fullPath}?alt=media`;
             })
             .catch((error) => {
               console.log("Se produjo un error al subir la foto del DNI");
@@ -219,7 +219,7 @@ export class FormularioRegistroComponent {
             });
 
             // Crear el documento en la base de datos
-            const res = await this.pacienteService.Create(this.fireAuthService.user!);
+            const res = await this.pacienteService.Create(this.fireAuthService.user! as Paciente);
             console.log("Paciente creado en la base de datos");
 
             // Emitir evento de éxito

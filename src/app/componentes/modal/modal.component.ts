@@ -1,15 +1,15 @@
-import { NgIf } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-modal',
   standalone: true,
-  imports: [NgIf],
+  imports: [],
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.css'
 })
 export class ModalComponent {
   @Output() loaded = new EventEmitter<void>();
+  @Output() continue = new EventEmitter<void>();
 
   type: string;
   title: string;
@@ -25,5 +25,9 @@ export class ModalComponent {
 
   ngAfterViewInit() {
     this.loaded.emit();
+  }
+
+  Continue() {
+    this.continue.emit();
   }
 }

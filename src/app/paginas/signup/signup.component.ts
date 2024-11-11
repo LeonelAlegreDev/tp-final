@@ -7,7 +7,7 @@ import { RegistroEspecialistaComponent } from '../../componentes/registro-especi
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [ LoaderComponent],
+  imports: [],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
@@ -70,7 +70,6 @@ export class SignupComponent {
       this.formRegistroCR?.destroy();
       this.CreateModal();
       this.modalCR!.instance.title = "Registro Exitoso";
-      console.log(this.modalCR);
     });
 
     // Se ejecuta cuando el formulario regresa a la vista principal
@@ -104,7 +103,6 @@ export class SignupComponent {
       this.formRegEspCR?.destroy();
       this.CreateModal();
       this.modalCR!.instance.title = "Registro Exitoso";
-      console.log(this.modalCR);
     });
 
     // Se ejecuta cuando el formulario regresa a la vista principal

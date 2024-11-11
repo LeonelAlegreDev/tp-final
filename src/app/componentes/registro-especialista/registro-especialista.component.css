@@ -265,6 +265,58 @@ h1{
         box-shadow: 0 0 5px 2px var(--darker-color);
     }
 }
+
+.especialidades{
+    width: 100%;
+    height: auto;
+    max-height: 120px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    font-size: 1em;
+    list-style: none;
+    border: 1px solid black;
+    background-color: var(--primary-color);
+    cursor: pointer;
+
+    li{
+        width: 100%;
+        height: 30px;
+        padding: 3px;
+        background-color: rgba(255, 255, 255, 0.8);
+    }
+    li:nth-child(odd){
+        background-color: rgba(255, 255, 255, 0.9);
+    }
+    li:hover{
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+}
+.disable{
+    display: none;
+}
+/* Estilos para el scrollbar */
+.especialidades::-webkit-scrollbar {
+    width: 12px; /* Ancho del scrollbar */
+}
+
+/* Estilos para el track del scrollbar */
+.especialidades::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color de fondo del track */
+    border-radius: 0px; /* Bordes redondeados */
+}
+
+/* Estilos para el thumb del scrollbar */
+.especialidades::-webkit-scrollbar-thumb {
+    background: #888; /* Color del thumb */
+    height: 50px; /* Altura máxima del thumb */
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+/* Estilos para el thumb del scrollbar cuando se está haciendo hover */
+.especialidades::-webkit-scrollbar-thumb:hover {
+    background: #888; /* Color del thumb al hacer hover */
+}
 .goLeft{
     animation: goLeft 1s ease-in-out forwards;
 }

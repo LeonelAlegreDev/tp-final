@@ -5,6 +5,7 @@ export interface Especialista {
     email: string;
     dni: string;
     edad: number;
+    especialidad?: string;
     fotoPerfil?: string;
-    especialidad: string;
+    aprobed: boolean;
 }

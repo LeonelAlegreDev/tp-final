@@ -87,13 +87,30 @@
                             {{ GetErrorMessage("personalForm", 'edad') }}
                         </span>
                     </div>
-                    
-                    <!-- OBRA SOCIAL -->
+
+                    <!-- ESPECIALIDAD -->
                     <div class="input-box">
-                        <span class="details">Obra social</span>
-                        <input type="text" formControlName="obraSocial" placeholder="Ingrese su obra social" required>
-                        <span class="error" *ngIf="obraSocial?.invalid && (obraSocial?.touched || obraSocial?.dirty)">
-                            {{ GetErrorMessage("personalForm", 'obraSocial') }}
+                        <label class="details" for="especialidad">Especialidad</label>
+                        <input type="text" formControlName="especialidad" placeholder="Buscar especialidad" (click)="FiltrarEspecialidades()" (input)="FiltrarEspecialidades()" required>
+                        <ul class="especialidades disable">
+                            @for (especialidad of especialidadesFiltradas; track $index) {
+                                @if(especialidad.aprobed){
+                                    <li (click)="SelectEspecialidad($event, especialidad.nombre)">{{ especialidad.nombre }}</li>
+                                }
+                            }
+                        </ul>
+                        <span class="error" *ngIf="especialidad?.invalid && (especialidad?.touched || especialidad?.dirty)">
+                            {{ GetErrorMessage("personalForm", 'especialidad') }}
+                        </span>
+                    </div>
+
+                    <!-- NEW ESPECIALIDAD  -->
+                    <div class="input-box disable newEspecialidad">
+                        <span class="details">Otra Especialidad</span>
+                        <input type="text" formControlName="newEspecialidad" placeholder="Ingrese su especialidad">
+                        
+                        <span class="error" *ngIf="newEspecialidad?.invalid && (newEspecialidad?.touched || newEspecialidad?.dirty)">
+                            {{ GetErrorMessage("personalForm", 'newEspecialidad') }}
                         </span>
                     </div>
                 </div>
@@ -112,15 +129,6 @@
                         <span class="error"
                             *ngIf="this.fotosForm.get('fotoPerfil')?.invalid && (this.fotosForm.get('fotoPerfil')?.touched || this.fotosForm.get('fotoPerfil')?.dirty)">
                             {{ GetErrorMessage("fotosForm", 'fotoPerfil') }}
-                        </span>
-                    </div>
-                    <!-- FOTO DE DNI -->
-                    <div class="input-box">
-                        <span class="details">Foto del DNI</span>
-                        <input type="file" formControlName="fotoDni" required (change)="UploadDni($event)">
-                        <span class="error"
-                            *ngIf="this.fotosForm.get('fotoDni')?.invalid && (this.fotosForm.get('fotoDni')?.touched || this.fotosForm.get('fotoDni')?.dirty)">
-                            {{ GetErrorMessage("fotosForm", 'fotoDni') }}
                         </span>
                     </div>
                 </div>

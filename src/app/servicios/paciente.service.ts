@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Component, inject } from '@angular/core';
+import { inject } from '@angular/core';
 import { Firestore, collection, collectionData, addDoc, DocumentReference, CollectionReference, doc, setDoc } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Paciente } from '../interfaces/paciente';
@@ -22,9 +22,10 @@ export class PacienteService {
 
   async Create(paciente: Paciente): Promise<string> {
     try {
-      const docRef = doc(this.pacientesCollectionRef, paciente.id); // Crea una referencia al documento con el ID especificado
-      await setDoc(docRef, paciente); // Usa setDoc para crear el documento con los datos del paciente
-
+      // Crea una referencia al documento con el ID especificado
+      const docRef = doc(this.pacientesCollectionRef, paciente.id);
+      // Usa setDoc para crear el documento con los datos del paciente
+      await setDoc(docRef, paciente);
       return docRef.id;
     }
     catch (error) {

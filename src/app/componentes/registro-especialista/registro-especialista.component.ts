@@ -1,18 +1,18 @@
 import { NgIf } from '@angular/common';
-import { Component, ElementRef, Inject, Renderer2, ViewChild, ViewChildren, Injector, viewChild, Output, EventEmitter } from '@angular/core';
+import { Component, ElementRef, Renderer2, ViewChild, ViewChildren, Injector, viewChild, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Storage, ref, uploadBytes } from '@angular/fire/storage';
-import { Paciente } from '../../interfaces/paciente';
 import { Especialista } from '../../interfaces/especialista';
 import { FireAuthService } from '../../servicios/fire-auth.service';
-import { PacienteService } from '../../servicios/paciente.service';
+import { EspecialistaService } from '../../servicios/especialista.service';
 import { inject } from '@angular/core';
-import { LoaderComponent } from "../../componentes/loader/loader.component";
+import { NgFor } from '@angular/common';
+import { Especialidad } from '../../interfaces/especialidad';
 
 @Component({
   selector: 'app-registro-especialista',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf, LoaderComponent],
+  imports: [ReactiveFormsModule, NgIf],
   templateUrl: './registro-especialista.component.html',
   styleUrl: './registro-especialista.component.css'
 })
@@ -24,8 +24,7 @@ export class RegistroEspecialistaComponent {
   @Output() sending = new EventEmitter<void>();
   @Output() success = new EventEmitter<void>();
   @Output() goBack = new EventEmitter<void>();
-  pacienteService: PacienteService = inject(PacienteService);
-
+  especialistaService: EspecialistaService = inject(EspecialistaService);
   accountForm: FormGroup;
   personalForm: FormGroup;
   fotosForm: FormGroup;
@@ -57,20 +56,24 @@ export class RegistroEspecialistaComponent {
       required: 'Edad es requerida.',
       pattern: 'Edad invalida.'
     },
-    obraSocial: {
-      required: 'Obra social es requerida.'
+    especialidad: {
+      required: 'Especialidad es requerida.',
+      pattern: 'Especialidad solo debe contener letras.',
+      invalid: 'Especialidad no válida. Seleccione una especialidad de la lista u "Otro" para cargar una especialidad.'
     },
-    fotoDni: {
-      required: 'La foto del DNI es obligatoria.',
-      format: 'Formato de imagen invalido. Formatos permitidos: .jpeg, .jpg, .png'
+    newEspecialidad: {
+      required: "Especialidad es requerida.",
+      pattern: 'Especialidad solo debe contener letras.'
     },
     fotoPerfil: {
       required: 'La foto de perfil es obligatoria.',
       format: 'Formato de imagen invalido. Formatos permitidos: .jpeg, .jpg, .png'
     }
   };
-  fotoDni: any;
   fotoPerfil: any;
+  listaEspecialidades: Especialidad[] = []
+  especialidadesFiltradas: Especialidad[] = [];
+  nuevaEspecialidad: boolean = false;
 
   get nombre() { return this.accountForm.get('nombre'); }
   get apellido() { return this.accountForm.get('apellido'); }
@@ -79,7 +82,8 @@ export class RegistroEspecialistaComponent {
 
   get dni() { return this.personalForm.get('dni'); }
   get edad() { return this.personalForm.get('edad'); }
-  get obraSocial() { return this.personalForm.get('obraSocial'); }
+  get especialidad() { return this.personalForm.get('especialidad'); }
+  get newEspecialidad() { return this.personalForm.get('newEspecialidad'); }
 
   constructor(private formBuilder: FormBuilder, private renderer: Renderer2, private storage: Storage, public fireAuthService: FireAuthService) {
     this.accountForm = this.formBuilder.group({
@@ -90,22 +94,75 @@ export class RegistroEspecialistaComponent {
     });
 
     this.personalForm = this.formBuilder.group({
-      obraSocial: ['', [Validators.required]],
       dni: ['', [Validators.required, Validators.pattern('^[0-9]{8}$')]],
-      edad: ['', [Validators.required, Validators.pattern('^[0-9]{2}$')]]
+      edad: ['', [Validators.required, Validators.pattern('^[0-9]{2}$')]],
+      especialidad: ['', [Validators.required, Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$')]],
+      newEspecialidad: ['', []]
+    });
+    // Suscribirse a los cambios en el campo especialidad
+    this.personalForm.get('especialidad')?.valueChanges.subscribe(value => {
+      this.onEspecialidadChange(value);
     });
 
     this.fotosForm = this.formBuilder.group({
-      fotoPerfil: ['', [Validators.required]],
-      fotoDni: ['', [Validators.required]]
+      fotoPerfil: ['', [Validators.required]]
     });
+
+    this.especialidadesFiltradas = this.listaEspecialidades;
   }
 
   ngAfterViewInit() {
     this.loaded.emit();
-    // this.orquestador.estadoActual = this.orquestador.estados[1];
+
+    // Mostrar las especialidades en la consola
+    this.especialistaService.tipoEspecialista$.subscribe(tipoEspecialista => {
+      this.listaEspecialidades = Array.isArray(tipoEspecialista) ? tipoEspecialista : [tipoEspecialista];
+    });
   }
   
+  SelectEspecialidad(evento: any, especialidad: string){
+    // Cambia el valor del input en el formulario
+    this.especialidad?.setValue(especialidad);
+
+    if(especialidad.toLowerCase() === 'otro'){
+      const input = document.querySelector('.newEspecialidad')!;
+      input.classList.remove('disable');
+    }
+    
+    // Oculta la lista de especialidades
+    const ul = document.querySelector('.especialidades')!;
+    ul.classList.add('disable');
+  }
+  FiltrarEspecialidades() {
+    const valor = this.personalForm.get('especialidad')?.value.toLowerCase();
+    const ul = document.querySelector('.especialidades')!;
+    ul.classList.remove('disable');
+
+    // Filtra las especialidades que coincidan con el valor ingresado
+    this.especialidadesFiltradas = this.listaEspecialidades.filter(especialidad =>
+      especialidad.nombre.toLowerCase().includes(valor)
+    );
+    if(valor === 'otro'){
+      const input = document.querySelector('.newEspecialidad')!;
+      input.classList.remove('disable');
+    }
+    else{
+      const input = document.querySelector('.newEspecialidad')!;
+      input.classList.add('disable');
+      console.log("Desactivar cargar especialidad");
+    }
+  }
+
+  onEspecialidadChange(value: string) {
+    const newEspecialidadControl = this.personalForm.get('newEspecialidad');
+    if (value.toLowerCase() === 'otro') {
+      newEspecialidadControl?.setValidators([Validators.required, Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$')]);
+    } else {
+      newEspecialidadControl?.clearValidators();
+    }
+    newEspecialidadControl?.updateValueAndValidity();
+  }
+
   async NextStep() {
     switch (this.currentStep) {
       case 1:
@@ -139,6 +196,16 @@ export class RegistroEspecialistaComponent {
         }
         break   
       case 2:
+        const especialidadSeleccionada = this.personalForm.get('especialidad')?.value;
+        const especialidadValida = this.listaEspecialidades.some(especialidad =>
+          especialidad.nombre.toLowerCase() === especialidadSeleccionada.toLowerCase()
+        );
+        if (!especialidadValida && especialidadSeleccionada.toLowerCase() !== 'otro') {
+
+          this.personalForm.get('especialidad')?.setErrors({ invalid: true });
+          return;
+        }
+
         if(this.personalForm.valid){
           const barElement = document.querySelector('.front li:nth-child(2)');
           const iconElement = document.querySelector('.icons li:nth-child(2)');
@@ -163,30 +230,41 @@ export class RegistroEspecialistaComponent {
         break;
       case 3:
         if(this.fotosForm.valid){
-          let user: Paciente = {
+          let especialista: Especialista = {
             nombre: this.nombre?.value,
             apellido: this.apellido?.value,
             email: this.email?.value,
             dni: this.dni?.value,
             edad: this.edad?.value,
-            obraSocial: this.obraSocial?.value,
+            aprobed: false,
           }
+          
           try{
             // Cambia el icono de la barra de progreso
             const icon = document.querySelector('.icons li:nth-child(3)');
             icon!.classList.remove('deschargedIcon');
             icon!.classList.add('chargedIcon');
 
-            console.log("Creando paciente");
+            console.log("Creando especialista");
+
+            if(this.especialidad?.value.toLowerCase() === 'otro'){
+              // Crea la especialidad en la base de datos
+              await this.especialistaService.CreateTipoEspecialista({
+                nombre: this.newEspecialidad?.value,
+                descripcion: '',
+                aprobed: false
+              } as Especialidad);
+              console.log("Especialidad creada en la base de datos");
+              especialista.especialidad = this.newEspecialidad?.value;
+            }
+            else especialista.especialidad = this.especialidad?.value;
             // Crear el usuario en Firebase Auth
-            await this.fireAuthService.Signup(user, this.contrasena?.value);
+            await this.fireAuthService.Signup(especialista, this.contrasena?.value);
             console.log("Usuario creado en Firebase Auth");
 
             // Una vez creado el usuario en Firebase Auth, se guardan los datos en la base de datos
             this.sending.emit();
             
-            const userDetails = document.getElementsByClassName('user-details');
-
             // Subir las fotos a Firebase Storage
             let fileName = "perfil." + this.fotoPerfil.type.split('/')[1];
             let storageRef = ref(this.storage, `${this.fireAuthService.user?.id}/fotos/${fileName}`);
@@ -203,25 +281,10 @@ export class RegistroEspecialistaComponent {
               console.log("Se produjo un error al subir la foto de perfil");
               throw error;
             });
-
-            fileName = "dni." + this.fotoDni.type.split('/')[1];
-            storageRef = ref(this.storage, `${this.fireAuthService.user?.id}/fotos/${fileName}`);
-
-            await uploadBytes(storageRef, this.fotoDni)
-            .then((response) => {
-              console.log("Foto de DNI subida correctamente");
-              let fullPath = encodeURIComponent(response.metadata.fullPath);
-              let bucket = response.metadata.bucket;
-              this.fireAuthService.user!.fotoDni = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${fullPath}?alt=media`;
-            })
-            .catch((error) => {
-              console.log("Se produjo un error al subir la foto del DNI");
-              throw error;
-            });
-
+            
             // Crear el documento en la base de datos
-            const res = await this.pacienteService.Create(this.fireAuthService.user!);
-            console.log("Paciente creado en la base de datos");
+            const res = await this.especialistaService.Create(this.fireAuthService.user! as Especialista);
+            console.log("Especialista creado en la base de datos");
 
             // Emitir evento de éxito
             this.success.emit();
@@ -303,18 +366,6 @@ export class RegistroEspecialistaComponent {
     else{
       this.goBack.emit();
     }
-  }
-
-  UploadDni($event: any) {
-    const file = $event.target.files[0];
-
-    if(file.type !== 'image/jpeg' && file.type !== 'image/png'){
-      this.fotosForm.get('errorFotoDni')?.setValue(this.errorMessages['fotoDni']['format']);
-      this.fotosForm.get('fotoDni')?.setErrors({ format: true });
-      return;
-    }
-
-    this.fotoDni = file;
   }
 
   UploadFoto($event: any) {
