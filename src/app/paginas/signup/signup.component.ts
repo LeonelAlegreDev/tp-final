@@ -3,6 +3,7 @@ import { LoaderComponent } from "../../componentes/loader/loader.component";
 import { FormularioRegistroComponent } from "../../componentes/formulario-registro/formulario-registro.component";
 import { ModalComponent } from '../../componentes/modal/modal.component';
 import { RegistroEspecialistaComponent } from '../../componentes/registro-especialista/registro-especialista.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -21,12 +22,7 @@ export class SignupComponent {
 
   selectedType: boolean = false;
 
-  constructor() { }
-
-  ngAfterViewInit() {
-    // this.CreateLoader();
-    // this.CreateForm();
-  }
+  constructor(private router: Router) { }
 
   SelectForm(tipo: string){
     if(tipo === 'paciente'){
@@ -119,6 +115,18 @@ export class SignupComponent {
     // Se ejecuta cuando el modal se ha cargado completamente
     this.modalCR.instance.loaded.subscribe(() => {
       this.MostrarComponente(this.modalCR!);
+    });
+
+    // Se subscribe al Output de continue del modal
+    this.modalCR?.instance.continue.subscribe(() => {
+      console.log('Continuar');
+      this.router.navigate(['/home']);
+    });
+
+    // Se subscribe al Output de close del modal
+    this.modalCR?.instance.close.subscribe(() => {
+      console.log('Cerrar');
+      this.router.navigate(['/home']);
     });
   }
 

@@ -54,7 +54,8 @@ export class FormularioRegistroComponent {
     },
     edad: {
       required: 'Edad es requerida.',
-      pattern: 'Edad invalida.'
+      pattern: 'Edad invalida.',
+      min: 'Debe ser mayor de 18 años.'
     },
     obraSocial: {
       required: 'Obra social es requerida.'
@@ -91,7 +92,7 @@ export class FormularioRegistroComponent {
     this.personalForm = this.formBuilder.group({
       obraSocial: ['', [Validators.required]],
       dni: ['', [Validators.required, Validators.pattern('^[0-9]{8}$')]],
-      edad: ['', [Validators.required, Validators.pattern('^[0-9]{2}$')]]
+      edad: ['', [Validators.required, Validators.pattern('^[0-9]{2}$'), Validators.min(18)]]
     });
 
     this.fotosForm = this.formBuilder.group({

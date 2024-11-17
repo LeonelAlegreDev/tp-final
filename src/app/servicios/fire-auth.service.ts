@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Paciente } from '../interfaces/paciente';
 import { createUserWithEmailAndPassword, Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
 import { Especialista } from '../interfaces/especialista';
+import { sendEmailVerification } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,9 @@ export class FireAuthService {
         this.user = user;
         this.user.id = res.user.uid;
         this.isLoggedIn = true;
+
+        await sendEmailVerification(res.user);
+        console.log("Email de verificacion enviado");
       }
       else{
         throw new Error("Error al crear usuario");
@@ -55,5 +59,25 @@ export class FireAuthService {
     } catch (e) {
       throw e;
     }
+  }
+
+  async Login(email: string, password: string): Promise<void> {
+    try {
+      await signInWithEmailAndPassword(this.auth, email, password);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // TODO: RE HACER
+  IsVerified() {
+    return this.auth.currentUser?.emailVerified;
+  }
+
+  IsEspecialista(): boolean { //magic happens here
+    return (<Especialista>this.user).especialidad !== undefined;
+  }
+  IsPaciente() {
+    return (<Paciente>this.user).obraSocial !== undefined;
   }
 }

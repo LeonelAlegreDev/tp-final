@@ -54,7 +54,8 @@ export class RegistroEspecialistaComponent {
     },
     edad: {
       required: 'Edad es requerida.',
-      pattern: 'Edad invalida.'
+      pattern: 'Edad invalida.',
+      min: 'Debe ser mayor de 18 años.'
     },
     especialidad: {
       required: 'Especialidad es requerida.',
@@ -95,10 +96,11 @@ export class RegistroEspecialistaComponent {
 
     this.personalForm = this.formBuilder.group({
       dni: ['', [Validators.required, Validators.pattern('^[0-9]{8}$')]],
-      edad: ['', [Validators.required, Validators.pattern('^[0-9]{2}$')]],
+      edad: ['', [Validators.required, Validators.pattern('^[0-9]{2}$'), Validators.min(18)]],
       especialidad: ['', [Validators.required, Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$')]],
       newEspecialidad: ['', []]
     });
+
     // Suscribirse a los cambios en el campo especialidad
     this.personalForm.get('especialidad')?.valueChanges.subscribe(value => {
       this.onEspecialidadChange(value);
@@ -149,7 +151,6 @@ export class RegistroEspecialistaComponent {
     else{
       const input = document.querySelector('.newEspecialidad')!;
       input.classList.add('disable');
-      console.log("Desactivar cargar especialidad");
     }
   }
 

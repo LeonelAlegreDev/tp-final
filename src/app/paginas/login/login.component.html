@@ -1,1 +1,45 @@
-<p>login works!</p>
+<div class="wrapper">
+    <div id="container" #container>
+        <div id="wrapper">
+            <h1>Iniciar sesión</h1>
+
+            <div class="content">
+                <div class="row">
+                    <div id="accountF" class="form" [formGroup]="loginForm" #accountF>
+                        <!-- TITULO -->
+                        <div class="title">Información de la Cuenta</div>
+                        <!-- INFORMACION PERSONAL -->
+                        <div class="user-details">
+                            <!-- EMAIL -->
+                            <div class="input-box">
+                                <span class="details">Email</span>
+                                <input type="email" formControlName="email" placeholder="Ingrese su email" required>
+                                <span class="error" *ngIf="email?.invalid && (email?.touched || email?.dirty)">
+                                    {{ GetErrorMessage('email') }}
+                                </span>
+                            </div>
+                            <!-- CONTRASEÑA -->
+                            <div class="input-box">
+                                <span class="details">Contraseña</span>
+                                <input type="password" formControlName="password" placeholder="Ingrese su contraseña"
+                                    required>
+                                <span class="error" *ngIf="password?.invalid && (password?.touched || password?.dirty)">
+                                    {{ GetErrorMessage('password') }}
+                                </span>
+                            </div>
+
+                            <div class="button">
+                                <button type="submit" (click)="Submit()">Iniciar sesión</button>
+                            </div>
+
+                            <div class="signup">
+                                <span>¿No tenes una cuenta?</span>
+                                <span class="link" routerLink="/signup" routerLinkActive="active">Crear cuenta</span>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+  </div>

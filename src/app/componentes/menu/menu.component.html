@@ -1,0 +1,19 @@
+<div id="menu">
+    <header routerLink="/home" routerLinkActive="active-route">
+        <h1>Health App</h1>
+        <img src="../../../assets/logo.png">
+    </header>
+
+    <ul class="mainlist">
+        <li class="item item-list" (click)="SublistClick($event)">
+            <span>Item 1 <i>#</i></span>
+            <ul class="sublist">
+                <li class="item"><span>Sub item 1 <i>#</i></span></li>
+                <li class="item"><span>Sub item 1 <i>#</i></span></li>
+            </ul>
+        </li>
+        <li class="item" routerLink="/perfil" routerLinkActive="active-route">
+            <span>Mí Perfil<i>#</i></span>
+        </li>
+    </ul>
+</div>

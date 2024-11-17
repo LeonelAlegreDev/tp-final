@@ -10,6 +10,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Output } fro
 export class ModalComponent {
   @Output() loaded = new EventEmitter<void>();
   @Output() continue = new EventEmitter<void>();
+  @Output() close = new EventEmitter<void>();
 
   type: string;
   title: string;
@@ -28,6 +29,12 @@ export class ModalComponent {
   }
 
   Continue() {
+    console.log("Boton continuar presionado");
     this.continue.emit();
+  }
+
+  Close() {
+    console.log("Boton cerrar presionado");
+    this.close.emit();
   }
 }
