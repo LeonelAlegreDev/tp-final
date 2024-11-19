@@ -5,5 +5,7 @@
     <div id="content">
         <h1>Verificación de cuenta pendiente</h1>
         <p>Revisa tu casilla de correo electrónico y confirma tu identidad para continuar.</p>
+        <p>¿No recibiste el email de confirmación?</p>
+        <span class="reenviar" (click)="fireAuthService.SendVerificationEmail()">Reenviar enlace de confirmación.</span>
     </div>
 </div>

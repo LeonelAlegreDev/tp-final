@@ -56,4 +56,24 @@ export class EspecialistaService {
       throw error;
     }
   }
+
+  async GetById(id: string): Promise<Especialista | null> {
+    return new Promise((resolve, reject) => {
+      this.especialistas$.subscribe({
+        next: (especialistas) => {
+          const especialista = especialistas.find(e => e.id === id);
+          if (especialista) {
+            resolve(especialista);
+          } else {
+            console.log('Especialista no encontrado');
+            resolve(null);
+          }
+        },
+        error: (error) => {
+          console.error('Error al obtener especialistas:', error);
+          reject(error);
+        }
+      });
+    });
+  }
 }

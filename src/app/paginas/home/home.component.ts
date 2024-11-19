@@ -1,13 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FireAuthService } from '../../servicios/fire-auth.service';
-import { Paciente } from '../../interfaces/paciente';
-import { Especialista } from '../../interfaces/especialista';
+import { MenuComponent } from '../../componentes/menu/menu.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [],
+  imports: [MenuComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })

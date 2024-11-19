@@ -16,4 +16,8 @@
             <span>Mí Perfil<i>#</i></span>
         </li>
     </ul>
+    <div id="profile">
+        <img [src]="fireAuthService.user?.fotoPerfil" alt="">
+        <span class="user-name">{{ (this.fireAuthService.user?.nombre || '') | capitalize }} {{ (this.fireAuthService.user?.apellido || '') | capitalize }}</span>
+    </div>
 </div>

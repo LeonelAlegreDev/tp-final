@@ -61,14 +61,27 @@ export class FireAuthService {
     }
   }
 
-  async Login(email: string, password: string): Promise<void> {
+  async Login(email: string, password: string): Promise<any> {
     try {
-      await signInWithEmailAndPassword(this.auth, email, password);
+      const credentials = await signInWithEmailAndPassword(this.auth, email, password);
+      return credentials.user;
     } catch (error) {
       throw error;
     }
   }
 
+  async SendVerificationEmail() {
+    try {
+      console.log("Enviando email de verificacion");
+      if (this.auth.currentUser) {
+        await sendEmailVerification(this.auth.currentUser);
+        console.log("Email de verificacion enviado");
+      }
+      else console.log("No hay usuario logueado");
+    } catch (e) {
+      throw e;
+    }
+  }
   // TODO: RE HACER
   IsVerified() {
     return this.auth.currentUser?.emailVerified;

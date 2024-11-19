@@ -33,4 +33,24 @@ export class PacienteService {
       throw error;
     }
   }
+
+  async GetById(id: string): Promise<Paciente | null> {
+    return new Promise((resolve, reject) => {
+      this.pacientes$.subscribe({
+        next: (pacientes) => {
+          const paciente = pacientes.find(p => p.id === id);
+          if (paciente) {
+            resolve(paciente);
+          } else {
+            console.log('Paciente no encontrado');
+            resolve(null);
+          }
+        },
+        error: (error) => {
+          console.error('Error al obtener pacientes:', error);
+          reject(error);
+        }
+      });
+    });
+  }
 }

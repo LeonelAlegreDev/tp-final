@@ -3,12 +3,22 @@
     height: 100vh;
     display: flex;
     flex-direction: row;
-    background-color: red;
 }
 #content{
-    background-color: blue;
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
+    p{
+        margin: 10px;
+    }
+    .reenviar{
+        margin: 5px;
+        font-weight: 800;
+        cursor: pointer;
+    }
 }
 h1{
     padding: 20px 0;

@@ -3,6 +3,9 @@ import { NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FireAuthService } from '../../servicios/fire-auth.service';
+import { EspecialistaService } from '../../servicios/especialista.service';
+import { PacienteService } from '../../servicios/paciente.service';
+import { Especialista } from '../../interfaces/especialista';
 
 
 @Component({
@@ -27,6 +30,8 @@ export class LoginComponent {
       minlength: 'La contraseña debe tener al menos 6 caracteres'
     }
   }
+  especialistaService = inject(EspecialistaService);
+  pacienteService = inject(PacienteService);
 
   get email() { return this.loginForm.get('email'); }
   get password() { return this.loginForm.get('password'); }
@@ -44,21 +49,25 @@ export class LoginComponent {
       this.loginForm.markAllAsTouched();
       return;
     }
-    console.log('Formulario válido');
     try {
-      await this.fireAuthService.Login(this.email?.value, this.password?.value);
+      const credentials = await this.fireAuthService.Login(this.email?.value, this.password?.value);
       console.log('Login successful');
 
-      // Valida si el usuario está verificado
-      if (!this.fireAuthService.IsVerified()) {
-        console.log('Email no verificado');
+      const especialista = await this.especialistaService.GetById(credentials.uid);
+      if (especialista) {
+        this.fireAuthService.user = especialista;
+        this.router.navigate(['/home']);
+        return;
+      }
 
-        // Redirecciona a la ruta verify-email
-        this.router.navigate(['/verify-email']);
+      const paciente = await this.pacienteService.GetById(credentials.uid); 
+      if (paciente) {
+        this.fireAuthService.user = paciente;
+        this.router.navigate(['/home']);
+        return;
       }
-      else {
-        console.log('Email verificado');
-      }
+      throw new Error('Usuario no encontrado');
+
     } catch (error) {
       if ((error as { code: string }).code === 'auth/invalid-credential') {
         console.error('Credenciales inválidas');
@@ -80,5 +89,6 @@ export class LoginComponent {
     }
     return '';
   }
+  
 
 }

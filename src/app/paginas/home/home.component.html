@@ -1,6 +1,9 @@
-@if (this.fireAuthService.IsEspecialista()) {
-    <p>Bienvenido Especialista</p>
-}
-@else if(this.fireAuthService.IsPaciente()) {
-    <p>Bienvenido Paciente</p>
-}
+<div id="wrapper">
+    <app-menu></app-menu>
+    @if (this.fireAuthService.IsEspecialista()) {
+        <p>Bienvenido Especialista</p>
+    }
+    @else if(this.fireAuthService.IsPaciente()) {
+        <p>Bienvenido Paciente</p>
+    }
+</div>

@@ -81,4 +81,26 @@
             background-color: var(--darker-color);
         }
     }
+
+    #profile{
+        width: 100%;
+        padding: 10px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background-color: var(--primary-color);
+
+        img{
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 1px solid var(--background-color);
+            background-color: gray;
+        }
+        .user-name{
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 18px;
+        }
+    }
 }

@@ -7,8 +7,11 @@ export const loggedInGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   
   if(fireAuthService.user === undefined){ 
-    router.navigate(["/welcome"]);
+    console.log("Acceso denegado, usuario no logueado");
+    console.log("Redirigiendo a /bienvenida");
+    router.navigate(["/bienvenida"]);
     return false;
   }
+  console.log("Usuario logueado, acceso permitido");
   return true;
 };
