@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, ViewChild } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
@@ -6,6 +6,7 @@ import { FireAuthService } from '../../servicios/fire-auth.service';
 import { EspecialistaService } from '../../servicios/especialista.service';
 import { PacienteService } from '../../servicios/paciente.service';
 import { Especialista } from '../../interfaces/especialista';
+import { AdminService } from '../../servicios/admin.service';
 
 
 @Component({
@@ -16,6 +17,7 @@ import { Especialista } from '../../interfaces/especialista';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
+  @ViewChild('cuentas') cuentas!: ElementRef
   fireAuthService = inject(FireAuthService);
   router = inject(Router);
 
@@ -30,8 +32,10 @@ export class LoginComponent {
       minlength: 'La contraseña debe tener al menos 6 caracteres'
     }
   }
+  generalError = '';
   especialistaService = inject(EspecialistaService);
   pacienteService = inject(PacienteService);
+  adminService = inject(AdminService);
 
   get email() { return this.loginForm.get('email'); }
   get password() { return this.loginForm.get('password'); }
@@ -49,6 +53,7 @@ export class LoginComponent {
       this.loginForm.markAllAsTouched();
       return;
     }
+    this.generalError = '';
     try {
       const credentials = await this.fireAuthService.Login(this.email?.value, this.password?.value);
       console.log('Login successful');
@@ -56,6 +61,7 @@ export class LoginComponent {
       const especialista = await this.especialistaService.GetById(credentials.uid);
       if (especialista) {
         this.fireAuthService.user = especialista;
+        this.fireAuthService.userRole = 'especialista';
         this.router.navigate(['/home']);
         return;
       }
@@ -63,17 +69,28 @@ export class LoginComponent {
       const paciente = await this.pacienteService.GetById(credentials.uid); 
       if (paciente) {
         this.fireAuthService.user = paciente;
+        this.fireAuthService.userRole = 'paciente';
         this.router.navigate(['/home']);
         return;
       }
+
+      const admin = await this.adminService.GetById(credentials.uid);
+      if (admin) {
+        this.fireAuthService.user = admin;
+        this.fireAuthService.userRole = 'admin';
+        this.router.navigate(['/home']);
+        return;
+      }
+
       throw new Error('Usuario no encontrado');
 
     } catch (error) {
       if ((error as { code: string }).code === 'auth/invalid-credential') {
-        console.error('Credenciales inválidas');
+        this.generalError = 'Credenciales inválidas';
       }
       else {
-        console.error('Error desconocido:', error);
+        console.log('Error al iniciar sesión:', error);
+        this.generalError = 'Error interno.';
       }
     }
   }
@@ -90,5 +107,49 @@ export class LoginComponent {
     return '';
   }
   
+  MostrarCuentas(){
+    if(this.cuentas.nativeElement.classList.contains('active')){
+      return;
+    }
+    this.cuentas.nativeElement.classList.add('active');
+  }
+  OcultarCuentas(){
+    if(!this.cuentas.nativeElement.classList.contains('active')){
+      return;
+    }
+    this.cuentas.nativeElement.classList.remove('active');
+  }
+
+  ElegirCuenta(tipo: string){
+    let email = null;
+    let password = null;
+
+    if (tipo === 'especialista') {
+      email = "especialista1@email.com";
+      password = "123456a";
+
+    } else if (tipo === 'paciente') {
+      email = "paciente1@email.com";
+      password = "123456a";
+    }
+    else if (tipo === 'admin') {
+      email = "admin1@email.com";
+      password = "123456A";
+    }
+
+    if(email && password){
+      this.email?.setValue(email);
+      this.password?.setValue(password);
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (this.cuentas && !this.cuentas.nativeElement.contains(event.target)) {
+      this.OcultarCuentas();
+    } else {
+      this.MostrarCuentas();
+    }
+  }
 
 }

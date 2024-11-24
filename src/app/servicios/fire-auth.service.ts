@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Paciente } from '../interfaces/paciente';
 import { createUserWithEmailAndPassword, Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
 import { Especialista } from '../interfaces/especialista';
+import { Admin } from '../interfaces/admin';
 import { sendEmailVerification } from 'firebase/auth';
 
 @Injectable({
@@ -11,8 +12,8 @@ export class FireAuthService {
   private isLoggedIn = false;
   get IsLoggedIn() { return this.isLoggedIn; }
   public msjError = "";
-  
-  user?: Paciente | Especialista;
+  user?: Paciente | Especialista | Admin;
+  userRole?: string = "";
 
   constructor(private auth: Auth) { }
 
@@ -82,15 +83,42 @@ export class FireAuthService {
       throw e;
     }
   }
-  // TODO: RE HACER
   IsVerified() {
     return this.auth.currentUser?.emailVerified;
   }
+  IsEspecialista(): boolean {
+    if(this.userRole === "especialista") return true;
 
-  IsEspecialista(): boolean { //magic happens here
-    return (<Especialista>this.user).especialidad !== undefined;
+    return false;
   }
   IsPaciente() {
-    return (<Paciente>this.user).obraSocial !== undefined;
+    if(this.userRole === "paciente") return true;
+    return false;
+  }
+  IsAdmin(): boolean {
+    if(this.userRole === "admin") return true;
+
+    return false;
+  }
+  IsApproved(): boolean {
+    if(this.user && this.IsEspecialista() ){
+      if((<Especialista>this.user)?.aprobed){
+        return true;
+      }
+      else {
+        return false
+      }
+    }
+    else if(this.user && this.IsPaciente()){
+      return true;
+    }
+    else if(this.user && (<Admin>this.user).aprobed){
+      return true
+    }
+    else{
+      return false;
+    }
+
+    return true;
   }
 }

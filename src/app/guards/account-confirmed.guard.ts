@@ -6,6 +6,14 @@ export const accountConfirmedGuard: CanActivateFn = (route, state) => {
   const fireAuthService = inject(FireAuthService);
   const router = inject(Router);
 
+  if(fireAuthService.user?.email === 'especialista1@email.com' || 
+      fireAuthService.user?.email === 'paciente1@email.com' ||
+      fireAuthService.user?.email === 'admin1@email.com')
+  {
+    console.log("Usuario de prueba, acceso permitido");
+    return true;
+  }
+
   if(fireAuthService.IsVerified()){
     console.log("Cuenta verificada, acceso permitido");
     return true;

@@ -1,14 +1,15 @@
 #menu{
     position: relative;
     height: 100%;
-    width: 30vw;
+    width: 20vw;
     display: flex;
     flex-direction: column;
+    transition: 0.5s ease-out;
     background-color: var(--secondary-color);
 
     header{
         width: 100%;
-        padding: 20px;
+        padding: 10px;
         display: flex;
         flex-direction: row;
         justify-content: space-evenly;
@@ -22,7 +23,8 @@
         color: var(--darker-color);
     }
     img{
-        height: 50px;
+        /* height: 50px; */
+        width: 60px;
     }
     
     .mainlist{
@@ -48,11 +50,55 @@
                 justify-content: space-between;
                 align-items: center;
                 transition: 0.5s ease-out;
+
+                path{
+                    transition: 0.5s ease-out;
+                }
+            }
+
+            .item-row{
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                order: reverse;
+                align-items: center;
+                flex-wrap: nowrap;
+                padding: 10px;
+
+                span{
+                    width: auto;
+                    height: 55px;
+                    padding: 10px;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: center;
+                    transition: 0.5s ease-out;
+    
+                    path{
+                        transition: 0.5s ease-out;
+                    }
+                }
+                svg{
+                    width: 60px;
+                }
             }
         }
         span:hover{
             color: var(--background-color);
             background-color: var(--darker-color);
+
+            path{
+                fill: var(--background-color);
+            }
+        }
+        .active-route{
+            color: var(--background-color);
+            background-color: var(--darker-color);
+
+            path{
+                fill: var(--background-color);
+            }
         }
         .item-list{
             height: 55px;
@@ -101,6 +147,55 @@
             cursor: pointer;
             margin-left: 10px;
             font-size: 18px;
+        }
+    }
+
+    #controller{
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+
+        .icon-collapse{
+            width: 40px;
+            height: 40px;
+            margin: 10px;
+            display: flex;
+            cursor: pointer;
+            transform: rotateZ(180deg);
+            transition: 0.5s ease-out;
+        }
+    }
+}
+
+#menu.collapsed{
+    width: 80px;
+
+    h1{
+        display: none;
+    }
+
+    .mainlist{
+        .item{
+            .item-row{
+                span{
+                    display: none;
+                }
+            }
+        }
+
+    }
+
+    #controller{
+
+        .icon-collapse{
+            width: 100%;
+            transform: rotateZ(0deg);
+        }
+    }
+
+    #profile{
+        .user-name{
+            display: none;
         }
     }
 }

@@ -76,4 +76,30 @@ export class EspecialistaService {
       });
     });
   }
+
+  async GetAll(): Promise<Especialista[]> {
+    return new Promise((resolve, reject) => {
+      this.especialistas$.subscribe({
+        next: (especialistas) => {
+          resolve(especialistas);
+        },
+        error: (error) => {
+          console.error('Error al obtener especialistas:', error);
+          reject(error);
+        }
+      });
+    });
+  }
+
+  async Update(id: string, especialista: Especialista): Promise<void> {
+    try {
+      // Actualiza el documento con el ID especificado
+      const docRef = doc(this.especialistasCollectionRef, id);
+      await setDoc(docRef, especialista, { merge: true });
+    }
+    catch (error) {
+      console.error('Error al actualizar el especialista en la base de datos');
+      throw error;
+    }
+  }
 }

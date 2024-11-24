@@ -6,4 +6,7 @@
     @else if(this.fireAuthService.IsPaciente()) {
         <p>Bienvenido Paciente</p>
     }
+    @else if (this.fireAuthService.IsAdmin()) {
+        <p>Bienvenido Admin</p>
+    }
 </div>

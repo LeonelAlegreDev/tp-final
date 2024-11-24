@@ -152,3 +152,64 @@ h1{
   font-weight: 1000;
   cursor: pointer;
 }
+
+.cuentas{
+  position: absolute;
+  align-self: flex-start;
+  width: 300px;
+  z-index: 100;
+  font-weight: 500;
+  letter-spacing: 3px;
+  cursor: pointer;
+  border-radius: 0 0 5px 5px;
+  box-shadow: 0 0px 10px 2px rgba(0, 0, 0, 1);
+  color: var(--background-color);
+  background-color: var(--darker-color);
+
+  .mini{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  svg{
+    width: 25px;
+    height: 25px;
+  
+    path{
+      stroke: var(--background-color);
+    }
+  }
+
+  .expanded{
+    display: none;
+    text-align: center;
+    
+    li{
+      padding: 5px;
+      cursor: pointer;
+      transition: 0.5s;
+    }
+    li:hover{
+      background-color: var(--primary-color);
+    }
+  }
+}
+.cuentas.active{
+  cursor: default;
+
+  .expanded{
+    display: block;
+  }
+
+  svg{
+    opacity: 0;
+  }
+}
+
+.generalError{
+  text-align: center;
+  height: 19px;
+}
