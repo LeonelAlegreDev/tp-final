@@ -55,7 +55,7 @@
                     <h2>Usuario #{{bufferEspecialista?.id}}</h2>
                 </div>
 
-                <div class="body">
+                <div class="body" [formGroup]="especialistaForm">
                     <div class="row">
                         <span class="modal-label">Nombre</span>
                         <span class="modal-value">{{ bufferEspecialista?.nombre}}</span>
@@ -142,8 +142,14 @@
                     </div>
                     <div class="row">
                         <span class="modal-label">Aprobado</span>
-                        <span class="modal-value">{{ bufferEspecialista?.aprobed}}</span>
-                        <svg (click)="ActivarEdicion($event)" width="19px" height="19px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- <input type="text" class="modal-value" [value]="bufferEspecialista?.aprobed" readonly> -->
+                        <input type="text" class="modal-value" formControlName="aprobado" readonly list="aprobed-options">
+                        <datalist id="aprobed-options">
+                            <option value="true"></option>
+                            <option value="false"></option>
+                        </datalist>
+
+                        <svg (click)="ToggleEdicion($event)" width="19px" height="19px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                             <g id="SVGRepo_iconCarrier">
@@ -156,6 +162,11 @@
                     </div>
                 </div>
 
+                <div class="erorr-message">
+                    @for (error of errores; track $index) {
+                       <span>{{ errores }}</span>
+                    }
+                </div>
                 <div class="controls">
                     <button (click)="CloseModal()">Cancelar</button>
                     <button (click)="EditarEspecialista(bufferEspecialista)">Aprobar</button>

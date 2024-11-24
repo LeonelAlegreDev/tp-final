@@ -80,12 +80,9 @@
                         margin-left: 10px;
                         padding-left: 5px;
                         border-radius: 15px;
+                        border: none;
+                        outline: none;
                         background-color: var(--background-color);
-                    }
-
-                    .editando{
-                        background-color: rgb(58, 146, 62);
-                        fill: rgb(58, 146, 62);
                     }
                     svg{
                         margin-left: 5px;
@@ -104,14 +101,46 @@
                         fill: black;
                     }
                 }
+                .row.editando{
+                    svg path{
+                        fill: rgb(49, 157, 103);;
+                    }
+                    .modal-value{
+                        background-color: rgb(121, 255, 188);
+                    }
+                }
             }
 
+            .erorr-message{
+                width: 100%;
+                min-height: 19px;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                color: var(--error-color);
+                font-weight: 700;
+                text-align: center;
+            }
             .controls{
                 height: 20%;
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
-                background-color:ivory;
+                align-items: center;
+
+                button{
+                    width: 100px;
+                    padding: 10px 15px;
+                    border-radius: 15px;
+                    border: none;
+                    box-shadow: 0 0 5px 0px black;
+                    cursor: pointer;
+                    font-weight: 600;
+                }
+            }
+
+            .controls button:nth-child(2){
+                background-color: var(--primary-color);
             }
         }
     }
