@@ -2,10 +2,15 @@
     <!-- MENU DE NAVEGACION -->
     <app-menu></app-menu>
 
-    <div id="content">
+    <div id="content" >
+
+        <!-- TABLA ESPECIALISTAS -->
         <section>
+
             <h1>Especialistas</h1>
-            <table id="tabla_especialistas">
+            <table id="tabla_especialistas" #tablaEspecialistas>
+                <div class="viewport" #vcrTablaEspecialistas></div>
+
                 <thead>
                     <tr>
                         <th>Editar</th>
@@ -49,8 +54,11 @@
             </table>
         </section>
 
-        <div id="modal">
+        <!-- MODAL -->
+        <div id="modal-especialista">
             <div class="modal-content" #modal>
+                <div class="viewport" #vcrModal></div>
+
                 <div class="head">
                     <h2>Usuario #{{bufferEspecialista?.id}}</h2>
                 </div>
