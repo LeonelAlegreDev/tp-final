@@ -1,18 +1,22 @@
 #wrapper{
     width: 100vw;
     height: 100vh;
+    max-height: 100vh;
     display: flex;
     flex-direction: row;
-    overflow: hidden;
+    overflow-y: auto;
+    border: 1px solid black;
 }
 #content{
-    flex: 1;
+    position: relative;
+    width: 100%;
     min-width: 70vw;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    align-items:flex-start;
+    align-items: flex-start;
     padding: 0 10px;
+    overflow-y: auto;
 
     .reenviar{
         margin: 5px;
@@ -22,19 +26,74 @@
 
     section{
         width: 100%;
-        max-width: 100%;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        overflow: auto;
+        overflow-x: auto;
+
 
         h1{
+            width: 100%;
             align-self: center;
+        }
+
+        .table{
+            width: 100%;
+            border-spacing: 2px;
+            border-color: black;
+        
+            thead{
+                width: 100%;
+                background-color: var(--secondary-color);
+                
+                th{
+                    padding: 5px 6px;
+                }
+            }
+            tbody{
+                width: 100%;
+        
+        
+                tr:nth-child(even){
+                    background-color: #b1e6ff;
+                }
+                tr:nth-child(odd){
+                    background-color: #e2ffb3;
+                }
+                td{
+                    padding: 5px 6px;
+                }
+        
+                .edit_aprobed{
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-around;
+                    align-items: center;
+                    cursor: pointer;
+        
+                    svg{
+                        width: 20px;
+                        height: 20px;
+                    }
+                }
+            }
+        
+        }
+
+        .new-registro{
+            border: none;
+            padding: 10px 15px;
+            margin: 10px 0;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 15px;
+            border: 1px solid black;
+            background-color: var(--primary-color);
         }
     }
 
-    #modal-especialista{
-        position:absolute;
+    .modal{
+        position:fixed;
         width: 100%;
         height: 100%;
         top: 0;
@@ -55,7 +114,7 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: space-around;
             background-color: var(--secondary-color);
 
             .head{
@@ -79,28 +138,38 @@
                         flex: 1;
                         margin-left: 10px;
                         padding-left: 5px;
+                        height: 19px;
+                        display: flex;
+                        flex-direction: row;
+                        flex-wrap: nowrap;
+                        overflow: hidden;
                         border-radius: 15px;
                         border: none;
                         outline: none;
                         background-color: var(--background-color);
                     }
+                    .modal-value.foto{
+                        color: blue;
+                        cursor: pointer;
+                    }
                     svg{
                         margin-left: 5px;
-                        cursor:not-allowed;
+                        cursor: pointer;
 
                         path{
-                            fill: rgb(161, 161, 161);
+                            fill: rgb(0, 0, 0);
+                            
+                        }
+                    }
+                    svg.disable{
+                        cursor: not-allowed;
+
+                        path{
+                            fill: rgb(102, 102, 102);
                         }
                     }
                 }
-                .row:last-child svg{
-                    cursor: pointer;
-
-                    path{
-                        /* fill: rgb(58, 146, 62); */
-                        fill: black;
-                    }
-                }
+                
                 .row.editando{
                     svg path{
                         fill: rgb(49, 157, 103);;
@@ -138,55 +207,69 @@
                     font-weight: 600;
                 }
             }
-
             .controls button:nth-child(2){
                 background-color: var(--primary-color);
+            }
+            .controls button.disabled{
+                cursor: not-allowed;
+                background-color: rgb(119, 119, 119);
+            }
+
+            #modal-foto{
+                align-self: center;
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                display: none;
+                justify-content: center;
+                align-items: center;
+                background-color: rgba(0, 0, 0, 0.4);
+
+                .foto{
+                    height: 200px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background-color: white;
+                    box-shadow: 0 0 5px 0px black;
+
+                    img{
+                        height: 100%;
+                    }
+                }
+                
+            }
+        }
+    }
+
+    #new-user{
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        flex: 1;
+        left: 0;
+        top: 0;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+
+        background-color: rgba(0, 0, 0, 0.5);
+
+        .content{
+            width: 800px;
+            max-width: 70vw;
+            height: 80%;
+
+            background-color: var(--secondary-color);
+
+            #wrapper{
+                background-color: red;
             }
         }
     }
 }
 h1{
     padding: 20px 0;
-}
-#tabla_especialistas{
-    width: 100%;
-    border-spacing: 2px;
-    border-color: black;
-
-    thead{
-        width: 100%;
-        background-color: var(--secondary-color);
-        
-        th{
-            padding: 5px 6px;
-        }
-    }
-    tbody{
-        width: 100%;
-
-
-        tr:nth-child(even){
-            background-color: #b1e6ff;
-        }
-        tr:nth-child(odd){
-            background-color: #e2ffb3;
-        }
-        td{
-            padding: 5px 6px;
-        }
-
-        .edit_aprobed{
-            display: flex;
-            flex-direction: row;
-            justify-content: space-around;
-            align-items: center;
-            cursor: pointer;
-
-            svg{
-                width: 20px;
-                height: 20px;
-            }
-        }
-    }
-
 }

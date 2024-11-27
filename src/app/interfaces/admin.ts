@@ -5,6 +5,6 @@ export interface Admin{
   edad: number;
   dni: number;
   email: string;
-  fotoPerfil: string;
+  fotoPerfil?: string;
   aprobed: boolean;
 }

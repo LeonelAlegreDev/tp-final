@@ -17,7 +17,7 @@ export class FireAuthService {
 
   constructor(private auth: Auth) { }
 
-  async Signup(user: Paciente | Especialista, password: string) {
+  async Signup(user: Paciente | Especialista | Admin, password: string) {
     try {
       const res = await createUserWithEmailAndPassword(this.auth, user.email, password);
       if (res.user.email !== null && res.user.uid !== null) {

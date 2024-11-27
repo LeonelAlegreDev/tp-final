@@ -2,31 +2,36 @@ import { NgIf } from '@angular/common';
 import { Component, ElementRef, Renderer2, ViewChild, ViewChildren, Injector, viewChild, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Storage, ref, uploadBytes } from '@angular/fire/storage';
-import { Especialista } from '../../interfaces/especialista';
 import { FireAuthService } from '../../servicios/fire-auth.service';
-import { EspecialistaService } from '../../servicios/especialista.service';
 import { inject } from '@angular/core';
-import { Especialidad } from '../../interfaces/especialidad';
+
+import { Admin } from '../../interfaces/admin';
+import { AdminService } from '../../servicios/admin.service';
 
 @Component({
-  selector: 'app-registro-especialista',
+  selector: 'app-registro-admin',
   standalone: true,
   imports: [ReactiveFormsModule, NgIf],
-  templateUrl: './registro-especialista.component.html',
-  styleUrl: './registro-especialista.component.css'
+  templateUrl: './registro-admin.component.html',
+  styleUrl: './registro-admin.component.css'
 })
-export class RegistroEspecialistaComponent {
+export class RegistroAdminComponent {
+  // Referencias a los formularios
   @ViewChild('accountF') accountF!: ElementRef;
   @ViewChild('personalF') personalF!: ElementRef;
   @ViewChild('fotosF') fotosF!: ElementRef;
+  // Eventos personalizados
   @Output() loaded = new EventEmitter<void>();
   @Output() sending = new EventEmitter<void>();
   @Output() success = new EventEmitter<void>();
   @Output() goBack = new EventEmitter<void>();
-  especialistaService: EspecialistaService = inject(EspecialistaService);
+  // Formularios
   accountForm: FormGroup;
   personalForm: FormGroup;
   fotosForm: FormGroup;
+  // Servicios
+  adminService: AdminService = inject(AdminService);
+  // Variables
   currentStep: number = 1;
   errorMessages: { [key: string]: { [key: string]: string } } = {
     nombre: {
@@ -56,24 +61,12 @@ export class RegistroEspecialistaComponent {
       pattern: 'Edad invalida.',
       min: 'Debe ser mayor de 18 años.'
     },
-    especialidad: {
-      required: 'Especialidad es requerida.',
-      pattern: 'Especialidad solo debe contener letras.',
-      invalid: 'Especialidad no válida. Seleccione una especialidad de la lista u "Otro" para cargar una especialidad.'
-    },
-    newEspecialidad: {
-      required: "Especialidad es requerida.",
-      pattern: 'Especialidad solo debe contener letras.'
-    },
     fotoPerfil: {
       required: 'La foto de perfil es obligatoria.',
       format: 'Formato de imagen invalido. Formatos permitidos: .jpeg, .jpg, .png'
     }
   };
   fotoPerfil: any;
-  listaEspecialidades: Especialidad[] = []
-  especialidadesFiltradas: Especialidad[] = [];
-  nuevaEspecialidad: boolean = false;
 
   get nombre() { return this.accountForm.get('nombre'); }
   get apellido() { return this.accountForm.get('apellido'); }
@@ -82,8 +75,6 @@ export class RegistroEspecialistaComponent {
 
   get dni() { return this.personalForm.get('dni'); }
   get edad() { return this.personalForm.get('edad'); }
-  get especialidad() { return this.personalForm.get('especialidad'); }
-  get newEspecialidad() { return this.personalForm.get('newEspecialidad'); }
 
   constructor(private formBuilder: FormBuilder, private renderer: Renderer2, private storage: Storage, public fireAuthService: FireAuthService) {
     this.accountForm = this.formBuilder.group({
@@ -96,71 +87,15 @@ export class RegistroEspecialistaComponent {
     this.personalForm = this.formBuilder.group({
       dni: ['', [Validators.required, Validators.pattern('^[0-9]{8}$')]],
       edad: ['', [Validators.required, Validators.pattern('^[0-9]{2}$'), Validators.min(18)]],
-      especialidad: ['', [Validators.required, Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$')]],
-      newEspecialidad: ['', []]
-    });
-
-    // Suscribirse a los cambios en el campo especialidad
-    this.personalForm.get('especialidad')?.valueChanges.subscribe(value => {
-      this.onEspecialidadChange(value);
     });
 
     this.fotosForm = this.formBuilder.group({
       fotoPerfil: ['', [Validators.required]]
     });
-
-    this.especialidadesFiltradas = this.listaEspecialidades;
   }
 
   ngAfterViewInit() {
     this.loaded.emit();
-
-    // Mostrar las especialidades en la consola
-    this.especialistaService.tipoEspecialista$.subscribe(tipoEspecialista => {
-      this.listaEspecialidades = Array.isArray(tipoEspecialista) ? tipoEspecialista : [tipoEspecialista];
-    });
-  }
-  
-  SelectEspecialidad(evento: any, especialidad: string){
-    // Cambia el valor del input en el formulario
-    this.especialidad?.setValue(especialidad);
-
-    if(especialidad.toLowerCase() === 'otro'){
-      const input = document.querySelector('.newEspecialidad')!;
-      input.classList.remove('disable');
-    }
-    
-    // Oculta la lista de especialidades
-    const ul = document.querySelector('.especialidades')!;
-    ul.classList.add('disable');
-  }
-  FiltrarEspecialidades() {
-    const valor = this.personalForm.get('especialidad')?.value.toLowerCase();
-    const ul = document.querySelector('.especialidades')!;
-    ul.classList.remove('disable');
-
-    // Filtra las especialidades que coincidan con el valor ingresado
-    this.especialidadesFiltradas = this.listaEspecialidades.filter(especialidad =>
-      especialidad.nombre.toLowerCase().includes(valor)
-    );
-    if(valor === 'otro'){
-      const input = document.querySelector('.newEspecialidad')!;
-      input.classList.remove('disable');
-    }
-    else{
-      const input = document.querySelector('.newEspecialidad')!;
-      input.classList.add('disable');
-    }
-  }
-
-  onEspecialidadChange(value: string) {
-    const newEspecialidadControl = this.personalForm.get('newEspecialidad');
-    if (value.toLowerCase() === 'otro') {
-      newEspecialidadControl?.setValidators([Validators.required, Validators.pattern('^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$')]);
-    } else {
-      newEspecialidadControl?.clearValidators();
-    }
-    newEspecialidadControl?.updateValueAndValidity();
   }
 
   async NextStep() {
@@ -196,16 +131,6 @@ export class RegistroEspecialistaComponent {
         }
         break   
       case 2:
-        const especialidadSeleccionada = this.personalForm.get('especialidad')?.value;
-        const especialidadValida = this.listaEspecialidades.some(especialidad =>
-          especialidad.nombre.toLowerCase() === especialidadSeleccionada.toLowerCase()
-        );
-        if (!especialidadValida && especialidadSeleccionada.toLowerCase() !== 'otro') {
-
-          this.personalForm.get('especialidad')?.setErrors({ invalid: true });
-          return;
-        }
-
         if(this.personalForm.valid){
           const barElement = document.querySelector('.front li:nth-child(2)');
           const iconElement = document.querySelector('.icons li:nth-child(2)');
@@ -230,13 +155,13 @@ export class RegistroEspecialistaComponent {
         break;
       case 3:
         if(this.fotosForm.valid){
-          let especialista: Especialista = {
+          let admin: Admin = {
             nombre: this.nombre?.value,
             apellido: this.apellido?.value,
             email: this.email?.value,
             dni: this.dni?.value,
             edad: this.edad?.value,
-            aprobed: false,
+            aprobed: false
           }
           
           try{
@@ -245,21 +170,10 @@ export class RegistroEspecialistaComponent {
             icon!.classList.remove('deschargedIcon');
             icon!.classList.add('chargedIcon');
 
-            console.log("Creando especialista");
+            console.log("Creando admin");
 
-            if(this.especialidad?.value.toLowerCase() === 'otro'){
-              // Crea la especialidad en la base de datos
-              await this.especialistaService.CreateTipoEspecialista({
-                nombre: this.newEspecialidad?.value,
-                descripcion: '',
-                aprobed: false
-              } as Especialidad);
-              console.log("Especialidad creada en la base de datos");
-              especialista.especialidad = this.newEspecialidad?.value;
-            }
-            else especialista.especialidad = this.especialidad?.value;
             // Crear el usuario en Firebase Auth
-            await this.fireAuthService.Signup(especialista, this.contrasena?.value);
+            await this.fireAuthService.Signup(admin, this.contrasena?.value);
             console.log("Usuario creado en Firebase Auth");
 
             // Una vez creado el usuario en Firebase Auth, se guardan los datos en la base de datos
@@ -283,8 +197,8 @@ export class RegistroEspecialistaComponent {
             });
             
             // Crear el documento en la base de datos
-            const res = await this.especialistaService.Create(this.fireAuthService.user! as Especialista);
-            console.log("Especialista creado en la base de datos");
+            const res = await this.adminService.Create(this.fireAuthService.user! as Admin);
+            console.log("Admin creado en la base de datos");
 
             // Emitir evento de éxito
             this.success.emit();
@@ -301,7 +215,6 @@ export class RegistroEspecialistaComponent {
             console.log(e.message)
             throw e;
           }
-          
         }
         else{
           this.fotosForm.markAllAsTouched();

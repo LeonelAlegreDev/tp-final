@@ -2,183 +2,397 @@
     <!-- MENU DE NAVEGACION -->
     <app-menu></app-menu>
 
-    <div id="content" >
+    <div id="content">
+        <div class="col">
+            <!-- TABLA ESPECIALISTAS -->
+            <section>
+                <h1>Especialistas</h1>
+                <table id="tabla_especialistas" class="table" #tablaEspecialistas>
+                    <div class="viewport" #vcrTablaEspecialistas></div>
+                    <thead>
+                        <tr>
+                            <th>Editar</th>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Email</th>
+                            <th>DNI</th>
+                            <th>Edad</th>
+                            <th>Especialidad</th>
+                            <th>Aprobado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (especialista of especialistas; track $index) {
+                        <tr>
+                            <td (click)="OpenModal(especialista, 'especialista')"
+                                style="display: flex; justify-content: center; align-items: center; cursor: pointer;">
+                                <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                    <g id="SVGRepo_iconCarrier">
+                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                            d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
+                                            fill="#0F0F0F"></path>
+                                    </g>
+                                </svg>
+                            </td>
+                            <td>{{ especialista.id }}</td>
+                            <td>{{ especialista.nombre | capitalize }}</td>
+                            <td>{{ especialista.apellido | capitalize }}</td>
+                            <td>{{ especialista.email }}</td>
+                            <td>{{ especialista.dni }}</td>
+                            <td>{{ especialista.edad }}</td>
+                            <td>{{ (especialista.especialidad || '') | capitalize }}</td>
+                            <td>{{ especialista.aprobed }} </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </section>
+            <!-- CREAR ESPECIALISTA -->
+            <section>
+                <button class="new-registro" (click)="OpenRegistro('especialista')">Crear nuevo especialista</button>
+            </section>
 
-        <!-- TABLA ESPECIALISTAS -->
-        <section>
+            <!-- TABLA PACIENTES -->
+            <section>
+                <h1>Pacientes</h1>
+                <table class="table" #tablaPacientes>
+                    <div class="viewport" #vcrTablaPacientes></div>
 
-            <h1>Especialistas</h1>
-            <table id="tabla_especialistas" #tablaEspecialistas>
-                <div class="viewport" #vcrTablaEspecialistas></div>
+                    <thead>
+                        <tr>
+                            <th>Editar</th>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Email</th>
+                            <th>DNI</th>
+                            <th>Edad</th>
+                            <th>Obra Social</th>
+                            <th>Foto Perfil</th>
+                            <th>Foto DNI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (paciente of pacientes; track $index) {
+                        <tr>
+                            <td (click)="OpenModal(paciente, 'paciente')"
+                                style="display: flex; justify-content: center; align-items: center; cursor: pointer;">
+                                <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                    <g id="SVGRepo_iconCarrier">
+                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                            d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
+                                            fill="#0F0F0F"></path>
+                                    </g>
+                                </svg>
+                            </td>
+                            <td>{{ paciente.id }}</td>
+                            <td>{{ paciente.nombre | capitalize }}</td>
+                            <td>{{ paciente.apellido | capitalize }}</td>
+                            <td>{{ paciente.email }}</td>
+                            <td>{{ paciente.dni }}</td>
+                            <td>{{ paciente.edad }}</td>
+                            <td>{{ paciente.obraSocial }}</td>
+                            <td><a [href]="paciente.fotoPerfil" target="_blank">link</a></td>
+                            <td><a [href]="paciente.fotoDni" target="_blank">link</a></td>
+                        </tr> 
+                        }
+                    </tbody>
+                </table>
+            </section>
+            <!-- CREAR PACIENTE -->
+            <section>
+                <button class="new-registro" (click)="OpenRegistro('paciente')">Crear nuevo paciente</button>
+            </section>
 
-                <thead>
-                    <tr>
-                        <th>Editar</th>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>Email</th>
-                        <th>DNI</th>
-                        <th>Edad</th>
-                        <th>Especialidad</th>
-                        <th>Aprobado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (especialista of especialistas; track $index) {
-                    <tr>
-                        <td (click)="OpenModal(especialista)"
-                            style="display: flex; justify-content: center; align-items: center; cursor: pointer;">
-                            <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none"
+            <!-- TABLA ADMINS -->
+            <section>
+                <h1>Administradores</h1>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Editar</th>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Email</th>
+                            <th>DNI</th>
+                            <th>Edad</th>
+                            <th>Foto Perfil</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (admin of admins; track $index) {
+                        <tr>
+                            <td (click)="OpenModal(admin, 'admin')"
+                                style="display: flex; justify-content: center; align-items: center; cursor: pointer;">
+                                <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                    <g id="SVGRepo_iconCarrier">
+                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                            d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
+                                            fill="#0F0F0F"></path>
+                                    </g>
+                                </svg>
+                            </td>
+                            <td>{{ admin.id }}</td>
+                            <td>{{ admin.nombre | capitalize }}</td>
+                            <td>{{ admin.apellido | capitalize }}</td>
+                            <td>{{ admin.email }}</td>
+                            <td>{{ admin.dni }}</td>
+                            <td>{{ admin.edad }}</td>
+                            <td><a [href]="admin.fotoPerfil" target="_blank">link</a></td>
+                        </tr> 
+                        }
+                    </tbody>
+                </table>
+            </section>
+            <!-- CREAR ADMIN -->
+            <section>
+                <button class="new-registro" (click)="OpenRegistro('admin')">Crear nuevo administrador</button>
+            </section>
+        </div>
+
+
+        <!-- MODAL EDICION -->
+        <div id="modal-especialista" class="modal">
+            <div class="modal-content" #modal>
+                <div class="viewport" #vcrModal></div>
+
+                <div class="head">
+                    <h2>Usuario #{{bufferRegistro?.id}}</h2>
+                </div>
+
+                <div class="body">
+                    <!-- FORMULARIO GENERAL -->
+                    <form>
+                        <div class="row">
+                            <span class="modal-label">Nombre</span>
+                            <span class="modal-value">{{ bufferRegistro?.nombre ?? '' | capitalize }}</span>
+                            <svg class="disable" width="19px" height="19px" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                 <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                                 <g id="SVGRepo_iconCarrier">
                                     <path fill-rule="evenodd" clip-rule="evenodd"
                                         d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
-                                        fill="#0F0F0F"></path>
+                                        fill="#0F0F0F">
+                                    </path>
                                 </g>
                             </svg>
-                        </td>
-                        <td>{{ especialista.id }}</td>
-                        <td>{{ especialista.nombre | capitalize }}</td>
-                        <td>{{ especialista.apellido | capitalize }}</td>
-                        <td>{{ especialista.email }}</td>
-                        <td>{{ especialista.dni }}</td>
-                        <td>{{ especialista.edad }}</td>
-                        <td>{{ (especialista.especialidad || '') | capitalize }}</td>
-                        <td>{{ especialista.aprobed }} </td>
-                    </tr>
+                        </div>
+                        <div class="row">
+                            <span class="modal-label">Apellido</span>
+                            <span class="modal-value">{{ bufferRegistro?.apellido ?? '' | capitalize }}</span>
+                            <svg class="disable" width="19px" height="19px" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
+                                        fill="#0F0F0F">
+                                    </path>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="row">
+                            <span class="modal-label">Email</span>
+                            <span class="modal-value">{{ bufferRegistro?.email}}</span>
+                            <svg class="disable" width="19px" height="19px" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
+                                        fill="#0F0F0F">
+                                    </path>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="row">
+                            <span class="modal-label">DNI</span>
+                            <span class="modal-value">{{ bufferRegistro?.dni}}</span>
+                            <svg class="disable" width="19px" height="19px" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
+                                        fill="#0F0F0F">
+                                    </path>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="row">
+                            <span class="modal-label">Edad</span>
+                            <span class="modal-value">{{ bufferRegistro?.edad}}</span>
+                            <svg class="disable" width="19px" height="19px" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
+                                        fill="#0F0F0F">
+                                    </path>
+                                </g>
+                            </svg>
+                        </div>
+                    </form>
+
+                    @if (tipoRegistro === "especialista") {
+                    <!-- FORMULARIO ESPECIALISTA -->
+                    <form [formGroup]="especialistaForm">
+                        <div class="row">
+                            <span class="modal-label">Especialidad</span>
+                            <span class="modal-value">{{ GetEspecialidad() | capitalize }}</span>
+                            <svg class="disable" width="19px" height="19px" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
+                                        fill="#0F0F0F">
+                                    </path>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="row">
+                            <span class="modal-label">Aprobado</span>
+                            <!-- <input type="text" class="modal-value" [value]="bufferEspecialista?.aprobed" readonly> -->
+                            <input type="text" class="modal-value" formControlName="aprobado" readonly
+                                list="aprobed-options">
+                            <datalist id="aprobed-options">
+                                <option value="true"></option>
+                                <option value="false"></option>
+                            </datalist>
+
+                            <svg (click)="ToggleEdicion($event)" width="19px" height="19px" viewBox="0 0 24 24"
+                                fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
+                                        fill="#0F0F0F">
+                                    </path>
+                                </g>
+                            </svg>
+                        </div>
+                    </form>
                     }
-                </tbody>
-            </table>
-        </section>
+                    @else if (tipoRegistro === "paciente") {
+                    <!-- FORMULARIO PACIENTE -->
+                    <form>
+                        <div class="row">
+                            <span class="modal-label">Obra Social</span>
+                            <span class="modal-value">{{ GetObraSocial() }}</span>
+                            <svg class="disable" width="19px" height="19px" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
+                                        fill="#0F0F0F">
+                                    </path>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="row">
+                            <span class="modal-label">Foto Perfil</span>
+                            <span class="modal-value foto" (click)="VerFoto(GetFotoPerfil())">Ver foto</span>
 
-        <!-- MODAL -->
-        <div id="modal-especialista">
-            <div class="modal-content" #modal>
-                <div class="viewport" #vcrModal></div>
+                            <svg class="disable" width="19px" height="19px" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
+                                        fill="#0F0F0F">
+                                    </path>
+                                </g>
+                            </svg>
+                        </div>
+                        <div class="row">
+                            <span class="modal-label">Foto DNI</span>
+                            <span class="modal-value foto" (click)="VerFoto(GetFotoDni())">Ver foto</span>
 
-                <div class="head">
-                    <h2>Usuario #{{bufferEspecialista?.id}}</h2>
-                </div>
+                            <svg class="disable" width="19px" height="19px" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
+                                        fill="#0F0F0F">
+                                    </path>
+                                </g>
+                            </svg>
+                        </div>
+                    </form>
+                    }
+                    @else if(tipoRegistro === "admin") {
+                        <div class="row">
+                            <span class="modal-label">Foto Perfil</span>
+                            <span class="modal-value foto" (click)="VerFoto(GetFotoPerfil())">Ver foto</span>
 
-                <div class="body" [formGroup]="especialistaForm">
-                    <div class="row">
-                        <span class="modal-label">Nombre</span>
-                        <span class="modal-value">{{ bufferEspecialista?.nombre}}</span>
-                        <svg width="19px" height="19px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
-                                    fill="#0F0F0F">
-                                </path>
-                            </g>
-                        </svg>
-                    </div>
-                    <div class="row">
-                        <span class="modal-label">Apellido</span>
-                        <span class="modal-value">{{ bufferEspecialista?.apellido}}</span>
-                        <svg width="19px" height="19px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
-                                    fill="#0F0F0F">
-                                </path>
-                            </g>
-                        </svg>
-                    </div>
-                    <div class="row">
-                        <span class="modal-label">Email</span>
-                        <span class="modal-value">{{ bufferEspecialista?.email}}</span>
-                        <svg width="19px" height="19px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
-                                    fill="#0F0F0F">
-                                </path>
-                            </g>
-                        </svg>
-                    </div>
-                    <div class="row">
-                        <span class="modal-label">DNI</span>
-                        <span class="modal-value">{{ bufferEspecialista?.dni}}</span>
-                        <svg width="19px" height="19px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
-                                    fill="#0F0F0F">
-                                </path>
-                            </g>
-                        </svg>
-                    </div>
-                    <div class="row">
-                        <span class="modal-label">Edad</span>
-                        <span class="modal-value">{{ bufferEspecialista?.edad}}</span>
-                        <svg width="19px" height="19px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
-                                    fill="#0F0F0F">
-                                </path>
-                            </g>
-                        </svg>
-                    </div>
-                    <div class="row">
-                        <span class="modal-label">Especialidad</span>
-                        <span class="modal-value">{{ bufferEspecialista?.especialidad}}</span>
-                        <svg width="19px" height="19px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
-                                    fill="#0F0F0F">
-                                </path>
-                            </g>
-                        </svg>
-                    </div>
-                    <div class="row">
-                        <span class="modal-label">Aprobado</span>
-                        <!-- <input type="text" class="modal-value" [value]="bufferEspecialista?.aprobed" readonly> -->
-                        <input type="text" class="modal-value" formControlName="aprobado" readonly list="aprobed-options">
-                        <datalist id="aprobed-options">
-                            <option value="true"></option>
-                            <option value="false"></option>
-                        </datalist>
-
-                        <svg (click)="ToggleEdicion($event)" width="19px" height="19px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
-                                    fill="#0F0F0F">
-                                </path>
-                            </g>
-                        </svg>
-                    </div>
+                            <svg class="disable" width="19px" height="19px" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
+                                        fill="#0F0F0F">
+                                    </path>
+                                </g>
+                            </svg>
+                        </div>
+                    }
                 </div>
 
                 <div class="erorr-message">
                     @for (error of errores; track $index) {
-                       <span>{{ errores }}</span>
+                    <span>{{ errores }}</span>
                     }
                 </div>
                 <div class="controls">
                     <button (click)="CloseModal()">Cancelar</button>
-                    <button (click)="EditarEspecialista(bufferEspecialista)">Aprobar</button>
+                    @if (tipoRegistro === 'paciente') {
+                    <button (click)="EditarRegistro(bufferRegistro)" disabled class="disabled">Guardar</button>
+                    }
+                    @else {
+                    <button (click)="EditarRegistro(bufferRegistro)">Guardar</button>
+                    }
                 </div>
+
+                <!-- MODAL FOTO -->
+                <div id="modal-foto" #modalFoto>
+                    <div class="foto">
+                        <img>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL NEW USUARIO -->
+        <div id="new-user">
+            <div class="content" #formRegistro>
+                <div class="viewport" #vcrRegistro></div>
             </div>
         </div>
     </div>
