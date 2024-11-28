@@ -40,9 +40,5 @@ export const routes: Routes = [
         loadComponent: () => import('./paginas/profile/profile.component').then(m => m.ProfileComponent),
         canActivate: [loggedInGuard]
     },
-    {
-        path: 'captcha',
-        loadComponent: () => import('./componentes/captcha/captcha.component').then(m => m.CaptchaComponent)
-    },
     { path: '**', redirectTo: '/error' }
 ];

@@ -319,40 +319,32 @@ export class UsersComponent {
 
     this.modalCR.instance.continue.subscribe(() => {
       this.modalCR?.destroy();
-<<<<<<< HEAD
       switch(tipo) {
         case 'especialista':
           this.CloseRegistro();
           break;
         case 'paciente':
-          this.CloseRegistroPaciente();
+          this.CloseRegistro();
           break;
         case 'admin':
-          this.CreateRegistroAdmin();
+          this.CloseRegistro();
           break;
       }
-=======
-      this.CloseRegistro();
->>>>>>> d5a0e39d24679583b64683686794ea41fe045bdb
     });
 
     this.modalCR.instance.close.subscribe(() => {
       this.modalCR?.destroy();
-<<<<<<< HEAD
       switch(tipo) {
         case 'especialista':
           this.CloseRegistro();
           break;
         case 'paciente':
-          this.CloseRegistroPaciente();
+          this.CloseRegistro();
           break;
         case 'admin':
-          this.CreateRegistroAdmin();
+          this.CloseRegistro();
           break;
       }
-=======
-      this.CloseRegistro();
->>>>>>> d5a0e39d24679583b64683686794ea41fe045bdb
     });
   }
 
