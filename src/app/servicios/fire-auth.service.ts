@@ -87,18 +87,13 @@ export class FireAuthService {
     return this.auth.currentUser?.emailVerified;
   }
   IsEspecialista(): boolean {
-    if(this.userRole === "especialista") return true;
-
-    return false;
+    return this.userRole === "especialista";
   }
   IsPaciente() {
-    if(this.userRole === "paciente") return true;
-    return false;
+    return this.userRole === "paciente";
   }
   IsAdmin(): boolean {
-    if(this.userRole === "admin") return true;
-
-    return false;
+    return this.userRole === "admin";
   }
   IsApproved(): boolean {
     if(this.user && this.IsEspecialista() ){

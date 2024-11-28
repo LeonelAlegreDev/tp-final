@@ -253,7 +253,7 @@ export class UsersComponent {
     observer.observe(this.formRegistroElementRef!.nativeElement);
 
     this.formRegistroEspecialistaCR.instance.goBack.subscribe(() => {
-      this.CloseRegistro(this.formRegistroEspecialistaCR);
+      this.CloseRegistro();
     });
 
     this.formRegistroEspecialistaCR.instance.success.subscribe(() => {
@@ -277,7 +277,7 @@ export class UsersComponent {
     observer.observe(this.formRegistroElementRef!.nativeElement);
 
     this.formRegistroPacienteCR.instance.goBack.subscribe(() => {
-      this.CloseRegistroPaciente(this.formRegistroPacienteCR);
+      this.CloseRegistro();
     });
 
     this.formRegistroPacienteCR.instance.success.subscribe(() => {
@@ -301,12 +301,12 @@ export class UsersComponent {
     observer.observe(this.formRegistroElementRef!.nativeElement);
 
     this.formRegistroAdminCR.instance.goBack.subscribe(() => {
-      this.CloseRegistroAdmin(this.formRegistroAdminCR);
+      this.CloseRegistro();
     });
 
     this.formRegistroAdminCR.instance.success.subscribe(() => {
       console.log('Registro exitoso');
-      this.formRegistroPacienteCR?.destroy();
+      this.formRegistroAdminCR?.destroy();
       this.CreateModalSuccess("admin");
     });
   }
@@ -315,40 +315,24 @@ export class UsersComponent {
     this.modalCR = this.vcrRegistro.createComponent(ModalComponent);
     this.modalCR.instance.title = 'Registro Exitoso';
     const modal = this.modalCR.location.nativeElement.querySelector('#modal');
-    
-    if(tipo === "especialista"){
+    modal.style = `width: ${this.formRegistroElementRef!.nativeElement.offsetWidth}px; height: ${this.formRegistroElementRef!.nativeElement.offsetHeight}px;`;
 
-      modal.style = `width: ${this.formRegistroElementRef!.nativeElement.offsetWidth}px; height: ${this.formRegistroElementRef!.nativeElement.offsetHeight}px;`;
-  
-      this.modalCR.instance.continue.subscribe(() => {
-        this.modalCR?.destroy();
-        this.CloseRegistro(this.formRegistroEspecialistaCR);
-      });
-    }
-    else if(tipo === "paciente") {
-      
-      modal.style = `width: ${this.formRegistroElementRef!.nativeElement.offsetWidth}px; height: ${this.formRegistroElementRef!.nativeElement.offsetHeight}px;`;
-    
-      this.modalCR.instance.continue.subscribe(() => {
-        this.modalCR?.destroy();
-        this.CloseRegistroPaciente(this.formRegistroPacienteCR);
-      });
-    }
+    this.modalCR.instance.continue.subscribe(() => {
+      this.modalCR?.destroy();
+      this.CloseRegistro();
+    });
 
+    this.modalCR.instance.close.subscribe(() => {
+      this.modalCR?.destroy();
+      this.CloseRegistro();
+    });
   }
 
-  CloseRegistro(formCR?: ComponentRef<RegistroEspecialistaComponent>) {
+  CloseRegistro() {
     const parent = this.formRegistroElementRef!.nativeElement.parentElement;
     parent.style.display = 'none';
   }
-  CloseRegistroPaciente(formCR?: ComponentRef<FormularioRegistroComponent>) {
-    const parent = this.formRegistroElementRef!.nativeElement.parentElement;
-    parent.style.display = 'none';
-  }
-  CloseRegistroAdmin(formCR?: ComponentRef<RegistroAdminComponent>) {
-    const parent = this.formRegistroElementRef!.nativeElement.parentElement;
-    parent.style.display = 'none';
-  }
+
   OpenRegistro(tipo: string) {
     if(tipo === 'especialista') {
       this.CreateRegistroEspecialista();

@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { loggedInGuard } from './guards/logged-in.guard';
 import { accountConfirmedGuard } from './guards/account-confirmed.guard';
 import { isApprovedGuard } from './guards/is-approved.guard';
+import { isAdminGuard } from './guards/is-admin.guard';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: "full" },
@@ -26,7 +27,18 @@ export const routes: Routes = [
     },
     {
         path: 'users',
-        loadComponent: () => import('./paginas/users/users.component').then(m => m.UsersComponent)
+        loadComponent: () => import('./paginas/users/users.component').then(m => m.UsersComponent),
+        canActivate: [loggedInGuard, accountConfirmedGuard, isApprovedGuard, isAdminGuard]
+    },
+    {
+        path: 'unauthorized',
+        loadComponent: () => import('./paginas/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent),
+        canActivate: [loggedInGuard]
+    },
+    {
+        path: 'profile',
+        loadComponent: () => import('./paginas/profile/profile.component').then(m => m.ProfileComponent),
+        canActivate: [loggedInGuard]
     },
     { path: '**', redirectTo: '/error' }
 ];

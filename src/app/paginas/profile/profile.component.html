@@ -1,0 +1,9 @@
+<div id="wrapper">
+    <!-- MENU DE NAVEGACION -->
+    <app-menu></app-menu>
+    
+    <div id="content">
+        <img [src]="fireAuthService.user?.fotoPerfil">
+        <h1>{{ fireAuthService.user?.nombre ?? '' | capitalize }} {{fireAuthService.user?.apellido ?? '' | capitalize}}</h1>
+    </div>
+</div>
