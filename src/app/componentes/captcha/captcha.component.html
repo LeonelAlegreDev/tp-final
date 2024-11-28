@@ -1,0 +1,13 @@
+<div id="container">
+    <form [formGroup]="captchaFG">
+        <div id="captcha">
+            <canvas #canvas></canvas>
+        </div>
+        <span>{{ msjError }}</span>
+        <input type="text" formControlName="response" placeholder="Captcha" id="cpatchaTextBox"/>
+        <div class="row">
+            <button type="submit" (click)="Validate()">Submit</button>
+            <button (click)="CreateCaptcha()">Reiniciar</button>    
+        </div>
+    </form>
+</div>

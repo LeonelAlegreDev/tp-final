@@ -28,5 +28,9 @@ export const routes: Routes = [
         path: 'users',
         loadComponent: () => import('./paginas/users/users.component').then(m => m.UsersComponent)
     },
+    {
+        path: 'captcha',
+        loadComponent: () => import('./componentes/captcha/captcha.component').then(m => m.CaptchaComponent)
+    },
     { path: '**', redirectTo: '/error' }
 ];

@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component, ElementRef, Inject, Renderer2, ViewChild, ViewChildren, Injector, viewChild, Output, EventEmitter } from '@angular/core';
+import { Component, ElementRef, Inject, Renderer2, ViewChild, ViewChildren, Injector, viewChild, Output, EventEmitter, ViewContainerRef, ComponentRef } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Storage, ref, uploadBytes } from '@angular/fire/storage';
 import { Paciente } from '../../interfaces/paciente';
@@ -7,6 +7,7 @@ import { FireAuthService } from '../../servicios/fire-auth.service';
 import { PacienteService } from '../../servicios/paciente.service';
 import { inject } from '@angular/core';
 import { LoaderComponent } from "../../componentes/loader/loader.component";
+import { CaptchaComponent } from '../captcha/captcha.component';
 
 @Component({
   selector: 'app-formulario-registro',
@@ -23,8 +24,9 @@ export class FormularioRegistroComponent {
   @Output() sending = new EventEmitter<void>();
   @Output() success = new EventEmitter<void>();
   @Output() goBack = new EventEmitter<void>();
+  @ViewChild('content', { read: ViewContainerRef }) contentVCR!: ViewContainerRef;
+  private captchaCR?: ComponentRef<CaptchaComponent>;
   pacienteService: PacienteService = inject(PacienteService);
-
   accountForm: FormGroup;
   personalForm: FormGroup;
   fotosForm: FormGroup;
@@ -105,7 +107,7 @@ export class FormularioRegistroComponent {
     this.loaded.emit();
     // this.orquestador.estadoActual = this.orquestador.estados[1];
   }
-  
+
   async NextStep() {
     switch (this.currentStep) {
       case 1:
@@ -113,10 +115,10 @@ export class FormularioRegistroComponent {
           const barElement = document.querySelector('.front li:nth-child(1)');
           const iconElement = document.querySelector('.icons li:nth-child(1)');
           const buttonPrev = document.querySelector('#btn-prev');
-          
+
           barElement!.classList.remove('deschardedBar');
           iconElement!.classList.remove('deschargedIcon');
-    
+
           // Agrega la animacion a la barra y al icono
           barElement!.classList.add('chargedBar');
           iconElement!.classList.add('chargedIcon');
@@ -129,17 +131,17 @@ export class FormularioRegistroComponent {
             this.renderer.setStyle(this.accountF.nativeElement, 'transform', 'translateX(-100%)');
             this.renderer.setStyle(this.personalF.nativeElement, 'transform', 'translateX(0)');
           }, 1);
-    
-          buttonPrev?.classList.remove('desactivated');    
+
+          buttonPrev?.classList.remove('desactivated');
           this.currentStep++;
         }
         else {
           console.log('Error: Formulario incompleto');
           this.accountForm.markAllAsTouched();
         }
-        break   
+        break
       case 2:
-        if(this.personalForm.valid){
+        if (this.personalForm.valid) {
           const barElement = document.querySelector('.front li:nth-child(2)');
           const iconElement = document.querySelector('.icons li:nth-child(2)');
 
@@ -152,17 +154,17 @@ export class FormularioRegistroComponent {
           this.renderer.setStyle(this.fotosF.nativeElement, 'display', 'flex');
           setTimeout(() => {
             this.renderer.setStyle(this.personalF.nativeElement, 'transform', 'translateX(-100%)');
-            this.renderer.setStyle(this.fotosF.nativeElement, 'transform', 'translateX(0)');  
+            this.renderer.setStyle(this.fotosF.nativeElement, 'transform', 'translateX(0)');
           }, 1);
           this.currentStep++;
         }
-        else{
+        else {
           this.personalForm.markAllAsTouched();
           console.log('Error: Formulario incompleto');
         }
         break;
       case 3:
-        if(this.fotosForm.valid){
+        if (this.fotosForm.valid) {
           let user: Paciente = {
             nombre: this.nombre?.value,
             apellido: this.apellido?.value,
@@ -171,76 +173,16 @@ export class FormularioRegistroComponent {
             edad: this.edad?.value,
             obraSocial: this.obraSocial?.value,
           }
-          try{
-            // Cambia el icono de la barra de progreso
-            const icon = document.querySelector('.icons li:nth-child(3)');
-            icon!.classList.remove('deschargedIcon');
-            icon!.classList.add('chargedIcon');
 
-            console.log("Creando paciente");
-            // Crear el usuario en Firebase Auth
-            await this.fireAuthService.Signup(user, this.contrasena?.value);
-            console.log("Usuario creado en Firebase Auth");
+          // Cambia el icono de la barra de progreso
+          const icon = document.querySelector('.icons li:nth-child(3)');
+          icon!.classList.remove('deschargedIcon');
+          icon!.classList.add('chargedIcon');
 
-            // Una vez creado el usuario en Firebase Auth, se guardan los datos en la base de datos
-            this.sending.emit();
-            
-            const userDetails = document.getElementsByClassName('user-details');
+          this.CreateCaptcha(user)
 
-            // Subir las fotos a Firebase Storage
-            let fileName = "perfil." + this.fotoPerfil.type.split('/')[1];
-            let storageRef = ref(this.storage, `${this.fireAuthService.user?.id}/fotos/${fileName}`);
-
-            await uploadBytes(storageRef , this.fotoPerfil)
-            .then((response) => {
-              console.log("Foto de perfil subida correctamente");
-              // Guardar la URL de la foto de perfil en una variable
-              let fullPath = encodeURIComponent(response.metadata.fullPath);
-              let bucket = response.metadata.bucket;
-              this.fireAuthService.user!.fotoPerfil = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${fullPath}?alt=media`;
-            })
-            .catch((error) => {
-              console.log("Se produjo un error al subir la foto de perfil");
-              throw error;
-            });
-
-            fileName = "dni." + this.fotoDni.type.split('/')[1];
-            storageRef = ref(this.storage, `${this.fireAuthService.user?.id}/fotos/${fileName}`);
-
-            await uploadBytes(storageRef, this.fotoDni)
-            .then((response) => {
-              console.log("Foto de DNI subida correctamente");
-              let fullPath = encodeURIComponent(response.metadata.fullPath);
-              let bucket = response.metadata.bucket;
-              (this.fireAuthService.user as Paciente).fotoDni = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${fullPath}?alt=media`;
-            })
-            .catch((error) => {
-              console.log("Se produjo un error al subir la foto del DNI");
-              throw error;
-            });
-
-            // Crear el documento en la base de datos
-            const res = await this.pacienteService.Create(this.fireAuthService.user! as Paciente);
-            console.log("Paciente creado en la base de datos");
-
-            // Emitir evento de éxito
-            this.success.emit();
-          }
-          catch(e: any){
-            if(e.message === "Email ya en uso"){
-              this.email?.setErrors({ used: true });
-              this.PrevStep();
-              this.PrevStep();
-            }
-            if(this.fireAuthService.user){
-              await this.fireAuthService.DeleteUser();
-            }
-            console.log(e.message)
-            throw e;
-          }
-          
         }
-        else{
+        else {
           this.fotosForm.markAllAsTouched();
           console.log('Error: Formulario incompleto');
         }
@@ -248,17 +190,92 @@ export class FormularioRegistroComponent {
     }
   }
 
-  PrevStep(){
-    if(this.currentStep > 1){
+  async CreateCaptcha(paciente: Paciente) {
+    this.captchaCR = this.contentVCR.createComponent(CaptchaComponent);
+
+    this.captchaCR.instance.success.subscribe(async () => {
+      console.log('Captcha correcto');
+      this.captchaCR?.destroy();
+      await this.CreatePaciente(paciente);
+    });
+  }
+
+  async CreatePaciente(user: Paciente) {
+    try {
+      console.log("Creando paciente");
+      // Crear el usuario en Firebase Auth
+      await this.fireAuthService.Signup(user, this.contrasena?.value);
+      console.log("Usuario creado en Firebase Auth");
+
+      // Una vez creado el usuario en Firebase Auth, se guardan los datos en la base de datos
+      this.sending.emit();
+
+      const userDetails = document.getElementsByClassName('user-details');
+
+      // Subir las fotos a Firebase Storage
+      let fileName = "perfil." + this.fotoPerfil.type.split('/')[1];
+      let storageRef = ref(this.storage, `${this.fireAuthService.user?.id}/fotos/${fileName}`);
+
+      await uploadBytes(storageRef, this.fotoPerfil)
+        .then((response) => {
+          console.log("Foto de perfil subida correctamente");
+          // Guardar la URL de la foto de perfil en una variable
+          let fullPath = encodeURIComponent(response.metadata.fullPath);
+          let bucket = response.metadata.bucket;
+          this.fireAuthService.user!.fotoPerfil = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${fullPath}?alt=media`;
+        })
+        .catch((error) => {
+          console.log("Se produjo un error al subir la foto de perfil");
+          throw error;
+        });
+
+      fileName = "dni." + this.fotoDni.type.split('/')[1];
+      storageRef = ref(this.storage, `${this.fireAuthService.user?.id}/fotos/${fileName}`);
+
+      await uploadBytes(storageRef, this.fotoDni)
+        .then((response) => {
+          console.log("Foto de DNI subida correctamente");
+          let fullPath = encodeURIComponent(response.metadata.fullPath);
+          let bucket = response.metadata.bucket;
+          (this.fireAuthService.user as Paciente).fotoDni = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${fullPath}?alt=media`;
+        })
+        .catch((error) => {
+          console.log("Se produjo un error al subir la foto del DNI");
+          throw error;
+        });
+
+      // Crear el documento en la base de datos
+      const res = await this.pacienteService.Create(this.fireAuthService.user! as Paciente);
+      console.log("Paciente creado en la base de datos");
+
+      // Emitir evento de éxito
+      this.success.emit();
+    }
+    catch (e: any) {
+      if (e.message === "Email ya en uso") {
+        this.email?.setErrors({ used: true });
+        this.PrevStep();
+        this.PrevStep();
+      }
+      if (this.fireAuthService.user) {
+        await this.fireAuthService.DeleteUser();
+      }
+      console.log(e.message)
+      throw e;
+    }
+  }
+
+  PrevStep() {
+    if (this.currentStep > 1) {
       let barElement: Element;
       let iconElement: Element;
 
-      switch(this.currentStep){
+      switch (this.currentStep) {
         case 2:
           barElement = document.querySelector('.front li:nth-child(1)')!;
           iconElement = document.querySelector('.icons li:nth-child(1)')!;
           const buttonPrev = document.querySelector('#btn-prev');
-          
+
           // Desactiva el boton de volver
           buttonPrev?.classList.add('desactivated');
 
@@ -276,12 +293,12 @@ export class FormularioRegistroComponent {
           }, 1000);
           this.currentStep--;
           break;
-        
+
         case 3:
           barElement = document.querySelector('.front li:nth-child(2)')!;
           iconElement = document.querySelector('.icons li:nth-child(2)')!;
           let lastIcon = document.querySelector('.icons li:nth-child(3)')!;
-          
+
           iconElement!.classList.remove('chargedIcon');
           barElement!.classList.remove('chargedBar');
           lastIcon!.classList.remove('chargedIcon');
@@ -289,10 +306,10 @@ export class FormularioRegistroComponent {
           iconElement!.classList.add('deschargedIcon');
           barElement!.classList.add('deschardedBar');
           lastIcon!.classList.add('deschargedIcon');
-          
+
           this.renderer.setStyle(this.fotosF.nativeElement, 'transform', 'translateX(100%)');
           this.renderer.setStyle(this.personalF.nativeElement, 'transform', 'translateX(0%)');
-          
+
           setTimeout(() => {
             this.fotosF.nativeElement.style.display = 'none';
           }, 1000);
@@ -300,7 +317,7 @@ export class FormularioRegistroComponent {
           break;
       }
     }
-    else{
+    else {
       this.goBack.emit();
     }
   }
@@ -308,7 +325,7 @@ export class FormularioRegistroComponent {
   UploadDni($event: any) {
     const file = $event.target.files[0];
 
-    if(file.type !== 'image/jpeg' && file.type !== 'image/png'){
+    if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
       this.fotosForm.get('errorFotoDni')?.setValue(this.errorMessages['fotoDni']['format']);
       this.fotosForm.get('fotoDni')?.setErrors({ format: true });
       return;
@@ -320,7 +337,7 @@ export class FormularioRegistroComponent {
   UploadFoto($event: any) {
     const file = $event.target.files[0];
 
-    if(file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/jpg'){
+    if (file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/jpg') {
       this.fotosForm.get('errorFotoPerfil')?.setValue(this.errorMessages['fotoPerfil']['format']);
       this.fotosForm.get('fotoPerfil')?.setErrors({ format: true });
       return;
@@ -330,26 +347,26 @@ export class FormularioRegistroComponent {
 
   GetErrorMessage(formGroupName: string, controlName: string): string {
     let formGroup: FormGroup;
-  
+
     switch (formGroupName) {
       case 'accountForm':
         formGroup = this.accountForm;
         break;
-      
+
       case 'personalForm':
         formGroup = this.personalForm;
         break;
 
         break;
-      
+
       case 'fotosForm':
         formGroup = this.fotosForm;
         break;
-      
+
       default:
         return '';
     }
-  
+
     const control = formGroup.get(controlName);
     if (control && control.errors) {
       for (const error in control.errors) {

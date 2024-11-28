@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component, ElementRef, Renderer2, ViewChild, ViewChildren, Injector, viewChild, Output, EventEmitter } from '@angular/core';
+import { Component, ElementRef, Renderer2, ViewChild, ViewChildren, Injector, viewChild, Output, EventEmitter, ViewContainerRef, ComponentRef } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Storage, ref, uploadBytes } from '@angular/fire/storage';
 import { FireAuthService } from '../../servicios/fire-auth.service';
@@ -7,6 +7,7 @@ import { inject } from '@angular/core';
 
 import { Admin } from '../../interfaces/admin';
 import { AdminService } from '../../servicios/admin.service';
+import { CaptchaComponent } from '../captcha/captcha.component';
 
 @Component({
   selector: 'app-registro-admin',
@@ -20,11 +21,15 @@ export class RegistroAdminComponent {
   @ViewChild('accountF') accountF!: ElementRef;
   @ViewChild('personalF') personalF!: ElementRef;
   @ViewChild('fotosF') fotosF!: ElementRef;
+  // Referencia al elemento recaptcha
   // Eventos personalizados
   @Output() loaded = new EventEmitter<void>();
   @Output() sending = new EventEmitter<void>();
   @Output() success = new EventEmitter<void>();
   @Output() goBack = new EventEmitter<void>();
+
+  @ViewChild('content', { read: ViewContainerRef }) contentVCR!: ViewContainerRef;
+  private captchaCR?: ComponentRef<CaptchaComponent>;
   // Formularios
   accountForm: FormGroup;
   personalForm: FormGroup;
@@ -82,6 +87,7 @@ export class RegistroAdminComponent {
       apellido: ['', [Validators.required, Validators.pattern('^[a-zA-Z]+$')]],
       email: ['', [Validators.required, Validators.email]],
       contrasena: ['', [Validators.required, Validators.minLength(6), Validators.pattern('^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$')]]
+      
     });
 
     this.personalForm = this.formBuilder.group({
@@ -96,6 +102,7 @@ export class RegistroAdminComponent {
 
   ngAfterViewInit() {
     this.loaded.emit();
+    
   }
 
   async NextStep() {
@@ -163,58 +170,13 @@ export class RegistroAdminComponent {
             edad: this.edad?.value,
             aprobed: false
           }
-          
-          try{
             // Cambia el icono de la barra de progreso
             const icon = document.querySelector('.icons li:nth-child(3)');
             icon!.classList.remove('deschargedIcon');
             icon!.classList.add('chargedIcon');
+            // Mostrar captcha
 
-            console.log("Creando admin");
-
-            // Crear el usuario en Firebase Auth
-            await this.fireAuthService.Signup(admin, this.contrasena?.value);
-            console.log("Usuario creado en Firebase Auth");
-
-            // Una vez creado el usuario en Firebase Auth, se guardan los datos en la base de datos
-            this.sending.emit();
-            
-            // Subir las fotos a Firebase Storage
-            let fileName = "perfil." + this.fotoPerfil.type.split('/')[1];
-            let storageRef = ref(this.storage, `${this.fireAuthService.user?.id}/fotos/${fileName}`);
-
-            await uploadBytes(storageRef , this.fotoPerfil)
-            .then((response) => {
-              console.log("Foto de perfil subida correctamente");
-              // Guardar la URL de la foto de perfil en una variable
-              let fullPath = encodeURIComponent(response.metadata.fullPath);
-              let bucket = response.metadata.bucket;
-              this.fireAuthService.user!.fotoPerfil = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${fullPath}?alt=media`;
-            })
-            .catch((error) => {
-              console.log("Se produjo un error al subir la foto de perfil");
-              throw error;
-            });
-            
-            // Crear el documento en la base de datos
-            const res = await this.adminService.Create(this.fireAuthService.user! as Admin);
-            console.log("Admin creado en la base de datos");
-
-            // Emitir evento de éxito
-            this.success.emit();
-          }
-          catch(e: any){
-            if(e.message === "Email ya en uso"){
-              this.email?.setErrors({ used: true });
-              this.PrevStep();
-              this.PrevStep();
-            }
-            if(this.fireAuthService.user){
-              await this.fireAuthService.DeleteUser();
-            }
-            console.log(e.message)
-            throw e;
-          }
+            this.CreateCaptcha(admin);
         }
         else{
           this.fotosForm.markAllAsTouched();
@@ -323,5 +285,63 @@ export class RegistroAdminComponent {
       }
     }
     return '';
+  }
+
+  async CreateCaptcha(admin: Admin) {
+    this.captchaCR = this.contentVCR.createComponent(CaptchaComponent);
+
+    this.captchaCR.instance.success.subscribe(async () => {
+      console.log('Captcha correcto');
+      this.captchaCR?.destroy();
+      await this.CrearUsuario(admin);
+    });
+  }
+
+  async CrearUsuario(admin: Admin) {
+    try{
+      console.log("Creando admin");
+      // Crear el usuario en Firebase Auth
+      await this.fireAuthService.Signup(admin, this.contrasena?.value);
+      console.log("Usuario creado en Firebase Auth");
+
+      // Una vez creado el usuario en Firebase Auth, se guardan los datos en la base de datos
+      this.sending.emit();
+      
+      // Subir las fotos a Firebase Storage
+      let fileName = "perfil." + this.fotoPerfil.type.split('/')[1];
+      let storageRef = ref(this.storage, `${this.fireAuthService.user?.id}/fotos/${fileName}`);
+
+      await uploadBytes(storageRef , this.fotoPerfil)
+      .then((response) => {
+        console.log("Foto de perfil subida correctamente");
+        // Guardar la URL de la foto de perfil en una variable
+        let fullPath = encodeURIComponent(response.metadata.fullPath);
+        let bucket = response.metadata.bucket;
+        this.fireAuthService.user!.fotoPerfil = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${fullPath}?alt=media`;
+      })
+      .catch((error) => {
+        console.log("Se produjo un error al subir la foto de perfil");
+        throw error;
+      });
+      
+      // Crear el documento en la base de datos
+      const res = await this.adminService.Create(this.fireAuthService.user! as Admin);
+      console.log("Admin creado en la base de datos");
+
+      // Emitir evento de éxito
+      this.success.emit();
+    }
+    catch(e: any){
+      if(e.message === "Email ya en uso"){
+        this.email?.setErrors({ used: true });
+        this.PrevStep();
+        this.PrevStep();
+      }
+      if(this.fireAuthService.user){
+        await this.fireAuthService.DeleteUser();
+      }
+      console.log(e.message)
+      throw e;
+    }
   }
 }

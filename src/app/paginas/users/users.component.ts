@@ -315,26 +315,37 @@ export class UsersComponent {
     this.modalCR = this.vcrRegistro.createComponent(ModalComponent);
     this.modalCR.instance.title = 'Registro Exitoso';
     const modal = this.modalCR.location.nativeElement.querySelector('#modal');
-    
-    if(tipo === "especialista"){
+    modal.style = `width: ${this.formRegistroElementRef!.nativeElement.offsetWidth}px; height: ${this.formRegistroElementRef!.nativeElement.offsetHeight}px;`;
 
-      modal.style = `width: ${this.formRegistroElementRef!.nativeElement.offsetWidth}px; height: ${this.formRegistroElementRef!.nativeElement.offsetHeight}px;`;
-  
-      this.modalCR.instance.continue.subscribe(() => {
-        this.modalCR?.destroy();
-        this.CloseRegistro(this.formRegistroEspecialistaCR);
-      });
-    }
-    else if(tipo === "paciente") {
-      
-      modal.style = `width: ${this.formRegistroElementRef!.nativeElement.offsetWidth}px; height: ${this.formRegistroElementRef!.nativeElement.offsetHeight}px;`;
-    
-      this.modalCR.instance.continue.subscribe(() => {
-        this.modalCR?.destroy();
-        this.CloseRegistroPaciente(this.formRegistroPacienteCR);
-      });
-    }
+    this.modalCR.instance.continue.subscribe(() => {
+      this.modalCR?.destroy();
+      switch(tipo) {
+        case 'especialista':
+          this.CloseRegistro();
+          break;
+        case 'paciente':
+          this.CloseRegistroPaciente();
+          break;
+        case 'admin':
+          this.CreateRegistroAdmin();
+          break;
+      }
+    });
 
+    this.modalCR.instance.close.subscribe(() => {
+      this.modalCR?.destroy();
+      switch(tipo) {
+        case 'especialista':
+          this.CloseRegistro();
+          break;
+        case 'paciente':
+          this.CloseRegistroPaciente();
+          break;
+        case 'admin':
+          this.CreateRegistroAdmin();
+          break;
+      }
+    });
   }
 
   CloseRegistro(formCR?: ComponentRef<RegistroEspecialistaComponent>) {

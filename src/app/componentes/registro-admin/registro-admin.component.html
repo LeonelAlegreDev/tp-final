@@ -17,7 +17,7 @@
         </ul>
     </div>
 
-    <div class="content">
+    <div class="content" #content>
         <div class="row">
             <!-- FORMULARIO DE REGISTRO -->
             <div id="accountF" class="form" [formGroup]="accountForm" #accountF>
@@ -60,6 +60,7 @@
                     </div>
 
                 </div>
+                <div #recaptchaContainer></div>
             </div>
 
             <!-- FORMULARIO PERSONAL -->
