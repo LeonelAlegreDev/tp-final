@@ -40,5 +40,18 @@ export const routes: Routes = [
         loadComponent: () => import('./paginas/profile/profile.component').then(m => m.ProfileComponent),
         canActivate: [loggedInGuard]
     },
+    // SIN GUARDS
+    {
+        path: 'mis-turnos',
+        loadComponent: () => import('./paginas/mis-turnos/mis-turnos.component').then(m => m.MisTurnosComponent),
+    },
+    {
+        path: 'solicitar-turno',
+        loadComponent: () => import('./paginas/solicitar-turno/solicitar-turno.component').then(m => m.SolicitarTurnoComponent),
+    },
+    {
+        path: 'buscador-pacientes',
+        loadComponent: () => import('./componentes/buscador-de-pacientes/buscador-de-pacientes.component').then(m => m.BuscadorDePacientesComponent),
+    },
     { path: '**', redirectTo: '/error' }
 ];

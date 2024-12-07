@@ -1,0 +1,62 @@
+.modal {
+    display: flex;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0,0.4);
+
+    .modal-content, .modal-usuario {
+        width: 600px;
+        max-width: 95vw;
+        height: 80%;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background-color: #fefefe;
+
+
+    }
+    .error{
+        width: 100%;
+        margin: 10px 0;
+        height: 19px;
+    }
+    .row{
+        margin: 20px 0;
+        padding: 0 20px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    button{
+        padding: 10px 20px;
+        border: none;
+        border-radius: 10px;
+        font-weight: bolder;
+        font-size: 1.1em;
+        cursor: pointer;
+        background-color: var(--primary-color);
+
+    }
+    .modal-usuario{
+        position: absolute;
+    }
+
+    .hidden{
+        display: none;
+    }
+}
+span {
+    color: red;
+    font-size: 12px;
+}

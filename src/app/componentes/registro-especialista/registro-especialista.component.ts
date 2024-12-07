@@ -250,7 +250,7 @@ export class RegistroEspecialistaComponent {
           }
           catch (e: any) {
             if (e.message === "Email ya en uso") {
-              this.email?.setErrors({ used: true });
+              this.accountForm.get('email')?.setErrors({ used: true });
               this.PrevStep();
               this.PrevStep();
             }
@@ -293,12 +293,26 @@ export class RegistroEspecialistaComponent {
       especialista.especialidad = this.newEspecialidad?.value;
     }
     else especialista.especialidad = this.especialidad?.value;
-    // Crear el usuario en Firebase Auth
-    await this.fireAuthService.Signup(especialista, this.contrasena?.value);
-    console.log("Usuario creado en Firebase Auth");
-
-    // Una vez creado el usuario en Firebase Auth, se guardan los datos en la base de datos
-    this.sending.emit();
+    
+    try {
+      // Crear el usuario en Firebase Auth
+      await this.fireAuthService.Signup(especialista, this.contrasena?.value)
+      
+      console.log("Usuario creado en Firebase Auth");
+      // Una vez creado el usuario en Firebase Auth, se guardan los datos en la base de datos
+      this.sending.emit();
+    } catch (error: any) {
+      if (error.message === "Email ya en uso") {
+        this.accountForm.get('email')?.setErrors({ used: true });
+        this.PrevStep();
+        this.PrevStep();
+      }
+      if (this.fireAuthService.user) {
+        await this.fireAuthService.DeleteUser();
+      }
+      console.log(error.message)
+      return;
+    }
 
     // Subir las fotos a Firebase Storage
     let fileName = "perfil." + this.fotoPerfil.type.split('/')[1];

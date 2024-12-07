@@ -60,11 +60,11 @@
             .item-row{
                 display: flex;
                 flex-direction: row;
-                justify-content: space-between;
+                justify-content: space-around;
                 order: reverse;
                 align-items: center;
                 flex-wrap: nowrap;
-                padding: 10px;
+                transition: 0.5s ease-out;
 
                 span{
                     width: auto;
@@ -82,10 +82,14 @@
                 }
                 svg{
                     width: 60px;
+                    path{
+                        transition: 1s ease-out;
+
+                    }
                 }
             }
         }
-        span:hover{
+        .item-row:hover{
             color: var(--background-color);
             background-color: var(--darker-color);
 

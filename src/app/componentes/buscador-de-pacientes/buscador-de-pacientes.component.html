@@ -1,0 +1,60 @@
+<div class="modal" id="pacienteModal">
+    <div class="modal-content">
+        <h2>Buscar Paciente</h2>
+        <form [formGroup]="pacienteForm">
+            <div class="row">
+                <label for="id">ID:</label>
+                <input id="id" formControlName="id" type="text">
+                <span class="error">{{ GetError(pacienteForm.controls['id']) }}</span>
+            </div>
+            <div class="row">
+                <label for="dni">DNI:</label>
+                <input id="dni" formControlName="dni" type="text">
+                <span class="error">{{ GetError(pacienteForm.controls['dni']) }}</span>
+            </div>
+            <div class="row">
+                <label for="email">EMAIL:</label>
+                <input id="email" formControlName="email" type="text">
+                <span class="error">{{ GetError(pacienteForm.controls['email']) }}</span>
+            </div>
+            <div class="row">
+                <button (click)="Cancelar()">Cancelar</button>
+                <button (click)="Buscar()">Enviar</button>
+                <span class="error" style="text-align: center;">{{ generalError }}</span>
+
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-usuario hidden" #usuario>
+        <div class="row">
+            <span class="label">ID:</span>
+            <span class="calue">{{bufferPaciente?.id}}</span>
+        </div>
+        <div class="row">
+            <span class="label">Nombre:</span>
+            <span class="calue">{{bufferPaciente?.nombre}}</span>
+        </div>
+        <div class="row">
+            <span class="label">Apellido:</span>
+            <span class="calue">{{bufferPaciente?.apellido}}</span>
+        </div>
+        <div class="row">
+            <span class="label">DNI:</span>
+            <span class="calue">{{bufferPaciente?.dni}}</span>
+        </div>
+        <div class="row">
+            <span class="label">Email:</span>
+            <span class="calue">{{bufferPaciente?.email}}</span>
+        </div>
+        <div class="row">
+            <span class="label">Obra Social:</span>
+            <span class="calue">{{bufferPaciente?.obraSocial}}</span>
+        </div>
+
+        <div class="row">
+            <button (click)="CancelarConfirmacion()">Cancelar</button>
+            <button (click)="Confirmar()">Seleccionar Paciente</button>
+        </div>
+    </div>
+</div>

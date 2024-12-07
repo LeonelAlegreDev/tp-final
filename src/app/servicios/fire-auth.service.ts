@@ -9,7 +9,7 @@ import { sendEmailVerification } from 'firebase/auth';
   providedIn: 'root'
 })
 export class FireAuthService {
-  private isLoggedIn = false;
+  isLoggedIn = false;
   get IsLoggedIn() { return this.isLoggedIn; }
   public msjError = "";
   user?: Paciente | Especialista | Admin;

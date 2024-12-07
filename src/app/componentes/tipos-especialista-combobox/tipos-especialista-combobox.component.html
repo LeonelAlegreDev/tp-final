@@ -1,0 +1,15 @@
+<div class="combo-box" #combobox>
+    <label for="especialidad">Ingrese la especialidad deseada:</label>
+    <span class="error">{{ errorMessage }}</span>
+    <div class="row">
+        <input (input)="FiltrarEspecialidades($event)" type="text" placeholder="Especialidad" id="especialidad" autocomplete="off">
+        <button (click)="Confirmar()">Confirmar</button>
+    </div>
+    <ul class="box hidden">
+        @for (tipo of tipoEspFiltrada; track $index) {
+            @if(tipo.aprobed && tipo.nombre !== 'Otro'){
+                <li (click)="SelectTipo(tipo.nombre)">{{ tipo.nombre | capitalize }}</li>
+            }
+        }
+    </ul>
+</div>

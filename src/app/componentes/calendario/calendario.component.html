@@ -1,0 +1,53 @@
+<h2>Seleccionar un turno</h2>
+
+<section id="calendario" #calendarioVCR>
+    @for (fecha of calendario; track $index) {
+    <div class="dia">
+        <h2 class="fecha">{{fecha.dia}}/{{fecha.mes}}/{{fecha.anio}}</h2>
+        @for (hora of fecha.horas; track $index) {
+            <div class="hora {{hora.estado}}" (click)="SeleccionarHorario(hora, fecha, hora.estado)">
+                <span class="valor">{{hora.hora}}:00</span>
+                <span class="estado">{{hora.estado}}</span>
+            </div>
+        }
+    </div>
+    }
+
+    <div class="modal confirmacion hidden">
+        <div class="contenido" #modalConfirmacion>
+            <div class="modal-header">
+                <h3>Reservar Turno</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <span>Fecha:</span>
+                    <span>{{ turnoSeleccionado?.fecha }}</span>
+                </div>
+                <div class="row">
+                    <span>Hora:</span>
+                    <span>{{ turnoSeleccionado?.hora }}:00</span>
+                </div>
+                <div class="row">
+                    <span>Profesional:</span>
+                    <span>{{ turnoSeleccionado?.especialista?.nombre }} {{ turnoSeleccionado?.especialista?.apellido}}</span>
+                </div>
+                <div class="row">
+                    <span>Especialidad:</span>
+                    <span>{{ turnoSeleccionado?.especialista?.especialidad }}</span>
+                </div>
+                <div class="row">
+                    <span>Paciente:</span>
+                    <span>{{ turnoSeleccionado?.paciente?.nombre }} {{ turnoSeleccionado?.paciente?.apellido }}</span>
+                </div>
+                <div class="row">
+                    <span>Email Paciente:</span>
+                    <span>{{ turnoSeleccionado?.paciente?.email }}</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" (click)="CerrarModalConfirmacion()">Cancelar</button>
+                <button class="btn" (click)="ConfirmarTurno()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</section>

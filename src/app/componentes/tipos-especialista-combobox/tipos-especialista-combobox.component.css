@@ -1,0 +1,65 @@
+.combo-box{
+    position: relative;
+    width: 350px;
+    height: 55px;
+    max-width: 95%;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+
+    margin-bottom: 100px;
+
+    label{
+        margin: 5px 0;
+        font-size: 1.1em;
+    }
+    .error{
+        width: 100%;
+        min-height: 17px;
+        font-size: 0.9em;
+        color: red;
+    }
+    .row{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+
+        input{
+            flex: 1;
+            padding: 5px;
+            font-size: 1em;
+        }
+        button{
+            font-size: 1em;
+            font-weight: bold;
+            padding: 10px;
+            margin-left: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            background-color: var(--primary-color);
+        }
+    }
+    .box{
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        min-height: 150px;
+        list-style: none;
+        background-color: white;
+
+        li{
+            position: relative;
+            min-height: 35px;
+            padding: 5px;
+            font-size: 1.1em;
+        }
+        li:hover{
+            cursor: pointer;
+            background-color: #0000005b;
+        }
+    }
+    .hidden{
+        display: none;
+    }
+}

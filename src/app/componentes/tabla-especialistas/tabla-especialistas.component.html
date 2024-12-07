@@ -1,0 +1,22 @@
+<div id="especialistas">
+    <h2>Seleccionar especialista</h2>
+    <table #table>
+        <thead>
+            <tr>
+                <th>Apellido</th>
+                <th>Nombre</th>
+                <th>Especialidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (especialista of especialistasFiltrados; track $index) {
+                <tr (click)="SelectEspecialista(especialista, $event)">
+                    <td>{{especialista.apellido | capitalize}}</td>
+                    <td>{{especialista.nombre | capitalize}}</td>
+                    <td>{{(especialista.especialidad || '') | capitalize}}</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button (click)="Confirmar()">Confirmar</button>
+</div>

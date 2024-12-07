@@ -65,7 +65,6 @@ export class EspecialistaService {
           if (especialista) {
             resolve(especialista);
           } else {
-            console.log('Especialista no encontrado');
             resolve(null);
           }
         },
