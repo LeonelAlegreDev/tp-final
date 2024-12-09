@@ -15,7 +15,9 @@ export class FireAuthService {
   user?: Paciente | Especialista | Admin;
   userRole?: string = "";
 
-  constructor(private auth: Auth) { }
+  constructor(private auth: Auth) {
+    this.LoadSession();
+  }
 
   async Signup(user: Paciente | Especialista | Admin, password: string) {
     try {
@@ -56,6 +58,8 @@ export class FireAuthService {
         await this.auth.currentUser?.delete();
         this.isLoggedIn = false;
         this.user = undefined;
+        this.userRole = undefined;
+        this.ClearSession();
       }
     } catch (e) {
       throw e;
@@ -115,5 +119,53 @@ export class FireAuthService {
     }
 
     return true;
+  }
+  GetEspecialidad(): string | undefined {
+    if(this.IsEspecialista()){
+      return (<Especialista>this.user).especialidad;
+    }
+    return undefined;
+  }
+  GetObraSocial(): string | undefined {
+    if(this.IsPaciente()){
+      return (<Paciente>this.user).obraSocial;
+    }
+    return undefined;
+  }
+
+  private LoadSession(){
+    const sessionData = localStorage.getItem("session");
+    if(sessionData){
+      const session = JSON.parse(sessionData);
+      const currentTime = new Date().getTime();
+      const sessionDuration = 1 * 60 * 1000; // 1 minuto
+
+      // si la sesion no expiro
+      if(currentTime - session.timestamp < sessionDuration){
+        this.isLoggedIn = session.isLoggedIn;
+        this.user = session.user;
+        this.userRole = session.userRole;
+        console.log("Sesion cargada");
+        console.log("userRole: " + session.userRole);
+      }
+      else {
+        this.ClearSession();
+      }
+    }
+  }
+
+  SaveSession(){
+    const sessionData = {
+      user: this.user,
+      userRole: this.userRole,
+      isLoggedIn: this.isLoggedIn,
+      timestamp: new Date().getTime()
+    };
+
+    localStorage.setItem("session", JSON.stringify(sessionData));
+  }
+
+  private ClearSession(){
+    localStorage.removeItem("session");
   }
 }

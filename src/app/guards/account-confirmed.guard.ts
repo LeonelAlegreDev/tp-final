@@ -15,7 +15,6 @@ export const accountConfirmedGuard: CanActivateFn = (route, state) => {
   }
 
   if(fireAuthService.IsVerified()){
-    console.log("Cuenta verificada, acceso permitido");
     return true;
   }
   console.log("Acceso denegado, cuenta no verificada");

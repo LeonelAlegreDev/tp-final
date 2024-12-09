@@ -3,6 +3,8 @@ import { loggedInGuard } from './guards/logged-in.guard';
 import { accountConfirmedGuard } from './guards/account-confirmed.guard';
 import { isApprovedGuard } from './guards/is-approved.guard';
 import { isAdminGuard } from './guards/is-admin.guard';
+import { canActivate } from '@angular/fire/auth-guard';
+import { isAdminOrPacienteGuard } from './guards/is-admin-or-paciente.guard';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: "full" },
@@ -36,22 +38,31 @@ export const routes: Routes = [
         canActivate: [loggedInGuard]
     },
     {
+        path: 'solicitar-turno',
+        loadComponent: () => import('./paginas/solicitar-turno/solicitar-turno.component').then(m => m.SolicitarTurnoComponent),
+        canActivate: [loggedInGuard, accountConfirmedGuard, isApprovedGuard, isAdminOrPacienteGuard]
+    },
+    // TODO: Falta implementar
+    {
+        /*
+        * Agregar        
+        * Debe contar con los datos del usuario. Nombre, Apellido, Imágenes, etc.
+        * Mis horarios
+        ■ Solamente los usuario con perfil Especialista
+        ■ En esta sección el Especialista deberá marcar su disponibilidad horaria. Tener en
+        cuenta que el Especialista puede tener más de una especialidad asociada.
+        */
         path: 'profile',
         loadComponent: () => import('./paginas/profile/profile.component').then(m => m.ProfileComponent),
-        canActivate: [loggedInGuard]
+        // canActivate: [loggedInGuard]
     },
-    // SIN GUARDS
     {
         path: 'mis-turnos',
         loadComponent: () => import('./paginas/mis-turnos/mis-turnos.component').then(m => m.MisTurnosComponent),
     },
     {
-        path: 'solicitar-turno',
-        loadComponent: () => import('./paginas/solicitar-turno/solicitar-turno.component').then(m => m.SolicitarTurnoComponent),
-    },
-    {
-        path: 'buscador-pacientes',
-        loadComponent: () => import('./componentes/buscador-de-pacientes/buscador-de-pacientes.component').then(m => m.BuscadorDePacientesComponent),
+        path: 'mis-horarios',
+        loadComponent: () => import('./componentes/mis-horarios/mis-horarios.component').then(m => m.MisHorariosComponent),
     },
     { path: '**', redirectTo: '/error' }
 ];

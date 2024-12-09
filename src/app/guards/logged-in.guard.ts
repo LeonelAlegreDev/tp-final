@@ -12,6 +12,5 @@ export const loggedInGuard: CanActivateFn = (route, state) => {
     router.navigate(["/bienvenida"]);
     return false;
   }
-  console.log("Usuario logueado, acceso permitido");
   return true;
 };

@@ -7,7 +7,6 @@ export const isApprovedGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   if(fireAuthService.IsApproved()){
-    console.log("Cuenta aprobada, acceso permitido");
     return true;
   }
   console.log("Cuenta no aprobada");

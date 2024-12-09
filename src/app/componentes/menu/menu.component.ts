@@ -1,5 +1,5 @@
 import { Component, ElementRef, inject, ViewChild } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { FireAuthService } from '../../servicios/fire-auth.service';
 import { CapitalizePipe } from "../../pipes/capitalize.pipe";
 
@@ -11,9 +11,24 @@ import { CapitalizePipe } from "../../pipes/capitalize.pipe";
   styleUrl: './menu.component.css'
 })
 export class MenuComponent {
-  @ViewChild("menu") menu!: ElementRef
-  fireAuthService = inject(FireAuthService)
+  @ViewChild("menu") menu!: ElementRef;
+  fireAuthService = inject(FireAuthService);
+  router = inject(Router);
   isCollapsed = false;
+
+  ngOnInit(): void {
+    // Recupera el estado de isCollapsed desde localStorage
+    const collapsedState = localStorage.getItem('isCollapsed');
+    this.isCollapsed = collapsedState === 'true';
+  }
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      const iconCollapse = this.menu.nativeElement.querySelector('.icon-collapse');
+
+      this.menu.nativeElement.style = "transition: 0.5s ease-out;"
+      iconCollapse.style = "transition: 0.5s ease-out;"
+    }, 10);
+  }
 
   SublistClick(event: Event): void {
     let target = event.target as HTMLElement;
@@ -32,16 +47,8 @@ export class MenuComponent {
 
   ToggleMenu(): void {
     this.isCollapsed = !this.isCollapsed;
-
-    switch(this.isCollapsed){
-      case true:
-      this.menu.nativeElement.classList.add('collapsed');
-      break;
-      
-      case false:
-      this.menu.nativeElement.classList.remove('collapsed');
-        break;
-    }
+    // Guarda el estado de isCollapsed en localStorage
+    localStorage.setItem('isCollapsed', this.isCollapsed.toString());
   }
 
 }

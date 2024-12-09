@@ -63,6 +63,7 @@ export class LoginComponent {
         this.fireAuthService.user = especialista;
         this.fireAuthService.userRole = 'especialista';
         this.fireAuthService.isLoggedIn = true;
+        this.fireAuthService.SaveSession();
         this.router.navigate(['/home']);
         return;
       }

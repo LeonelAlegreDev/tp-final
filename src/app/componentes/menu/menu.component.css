@@ -3,9 +3,9 @@
     height: 100%;
     max-height: 100vh;
     width: 20vw;
+    min-width: 210px;
     display: flex;
     flex-direction: column;
-    transition: 0.5s ease-out;
     background-color: var(--secondary-color);
 
     header{
@@ -21,6 +21,7 @@
         justify-content: center;
         align-items: center;
         height: 50px;
+        font-size: 24px;
         color: var(--darker-color);
     }
     img{
@@ -41,29 +42,15 @@
             height: 55px;
             cursor: pointer;
             font-size: 1.1em;
-            
-            span{
-                width: 100%;
-                height: 55px;
-                padding: 10px;
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-                transition: 0.5s ease-out;
-
-                path{
-                    transition: 0.5s ease-out;
-                }
-            }
 
             .item-row{
+                height: 55px;
                 display: flex;
                 flex-direction: row;
-                justify-content: space-around;
-                order: reverse;
+                justify-content: flex-start;
                 align-items: center;
                 flex-wrap: nowrap;
+                padding-left: 20px;
                 transition: 0.5s ease-out;
 
                 span{
@@ -72,16 +59,17 @@
                     padding: 10px;
                     display: flex;
                     flex-direction: row;
-                    justify-content: space-between;
+                    justify-content: flex-start;
                     align-items: center;
                     transition: 0.5s ease-out;
+                    font-size: 15px;
     
                     path{
                         transition: 0.5s ease-out;
                     }
                 }
                 svg{
-                    width: 60px;
+                    width: 40px;
                     path{
                         transition: 1s ease-out;
 
@@ -97,7 +85,7 @@
                 fill: var(--background-color);
             }
         }
-        .active-route{
+        .active-route .item-row{
             color: var(--background-color);
             background-color: var(--darker-color);
 
@@ -139,6 +127,7 @@
         display: flex;
         flex-direction: row;
         align-items: center;
+        cursor: pointer;
         background-color: var(--primary-color);
 
         img{
@@ -149,7 +138,6 @@
             background-color: gray;
         }
         .user-name{
-            cursor: pointer;
             margin-left: 10px;
             font-size: 18px;
         }
@@ -167,13 +155,13 @@
             display: flex;
             cursor: pointer;
             transform: rotateZ(180deg);
-            transition: 0.5s ease-out;
         }
     }
 }
 
 #menu.collapsed{
     width: 80px;
+    min-width: 80px;
 
     h1{
         display: none;
@@ -182,6 +170,9 @@
     .mainlist{
         .item{
             .item-row{
+                justify-content: center;
+                padding: 0;
+
                 span{
                     display: none;
                 }
