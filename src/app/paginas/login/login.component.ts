@@ -73,6 +73,7 @@ export class LoginComponent {
         this.fireAuthService.user = paciente;
         this.fireAuthService.userRole = 'paciente';
         this.fireAuthService.isLoggedIn = true;
+        this.fireAuthService.SaveSession();
         this.router.navigate(['/home']);
         return;
       }
@@ -82,6 +83,7 @@ export class LoginComponent {
         this.fireAuthService.user = admin;
         this.fireAuthService.userRole = 'admin';
         this.fireAuthService.isLoggedIn = true;
+        this.fireAuthService.SaveSession();
         this.router.navigate(['/home']);
         return;
       }

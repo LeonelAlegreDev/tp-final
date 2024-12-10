@@ -75,6 +75,18 @@ export class FireAuthService {
     }
   }
 
+  async Logout() {
+    try {
+      await this.auth.signOut();
+      this.isLoggedIn = false;
+      this.user = undefined;
+      this.userRole = undefined;
+      this.ClearSession();
+    } catch (e) {
+      throw e;
+    }
+  }
+
   async SendVerificationEmail() {
     try {
       console.log("Enviando email de verificacion");
@@ -138,15 +150,13 @@ export class FireAuthService {
     if(sessionData){
       const session = JSON.parse(sessionData);
       const currentTime = new Date().getTime();
-      const sessionDuration = 1 * 60 * 1000; // 1 minuto
+      const sessionDuration = 60 * 60 * 1000; // 60 minutos
 
       // si la sesion no expiro
       if(currentTime - session.timestamp < sessionDuration){
         this.isLoggedIn = session.isLoggedIn;
         this.user = session.user;
         this.userRole = session.userRole;
-        console.log("Sesion cargada");
-        console.log("userRole: " + session.userRole);
       }
       else {
         this.ClearSession();
@@ -163,6 +173,7 @@ export class FireAuthService {
     };
 
     localStorage.setItem("session", JSON.stringify(sessionData));
+    console.log("Session guardada", sessionData);
   }
 
   private ClearSession(){

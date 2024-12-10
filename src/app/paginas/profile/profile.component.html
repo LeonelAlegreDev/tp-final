@@ -6,8 +6,7 @@
         <!-- HEADER -->
         <header>
             <img [src]="fireAuthService.user?.fotoPerfil">
-            <!-- <h1>{{ fireAuthService.user?.nombre ?? '' | capitalize }} {{fireAuthService.user?.apellido ?? '' | capitalize}}</h1> -->
-            <h1>Pablo Moto</h1>
+            <h1>{{ fireAuthService.user?.nombre ?? '' | capitalize }} {{fireAuthService.user?.apellido ?? '' | capitalize}}</h1>
         </header>
 
         <!-- INFORMACION DEL USUARIO -->
@@ -15,29 +14,23 @@
             <h2>Información</h2>
             <div class="row">
                 <span class="label">Nombre:</span>
-                <!-- <span class="value">{{ fireAuthService.user?.nombre ?? '' | capitalize }}</span> -->
-                <span class="value">{{ fireAuthService.user?.nombre ?? 'Pablo' | capitalize }}</span>
+                <span class="value">{{ fireAuthService.user?.nombre ?? '' | capitalize }}</span>
             </div>
             <div class="row">
                 <span class="label">Apellido:</span>
-                <!-- <span class="value">{{ fireAuthService.user?.apellido ?? '' | capitalize }}</span> -->
-                <div></div>
-                <span class="value">{{ fireAuthService.user?.apellido ?? 'Moto' | capitalize }}</span>
+                <span class="value">{{ fireAuthService.user?.apellido ?? '' | capitalize }}</span>
             </div>
             <div class="row">
                 <span class="label">Edad:</span>
-                <!-- <span class="value">{{ fireAuthService.user?.edad ?? '' }}</span> -->
-                <span class="value">{{ fireAuthService.user?.edad ?? '25' }}</span>
+                <span class="value">{{ fireAuthService.user?.edad }}</span>
             </div>
             <div class="row">
                 <span class="label">Correo electrónico:</span>
-                <!-- <span class="value">{{ fireAuthService.user?.correo ?? '' }}</span> -->
-                <span class="value">{{ fireAuthService.user?.email ?? 'pablo.moto@email.com' }}</span>
+                <span class="value">{{ fireAuthService.user?.email }}</span>
             </div>
             <div class="row">
                 <span class="label">DNI:</span>
-                <!-- <span class="value">{{ fireAuthService.user?.dni ?? '' }}</span> -->
-                <span class="value">{{ fireAuthService.user?.dni ?? '12345678' }}</span>
+                <span class="value">{{ fireAuthService.user?.dni }}</span>
             </div>
 
             @if (fireAuthService.IsAdmin() || fireAuthService.IsEspecialista()) {
@@ -60,8 +53,10 @@
                 <span class="value">{{ fireAuthService.GetObraSocial() }}</span>
             </div>
             }
+            <div class="row control">
+                <button (click)="CerrarSession()">Cerrar sesión</button>
+            </div>
         </section>
-
         <!-- MIS HORARIOS -->
         @if(fireAuthService.IsEspecialista()){
         <section id="mis-horarios">

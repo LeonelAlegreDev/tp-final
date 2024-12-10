@@ -64,13 +64,26 @@
             flex: 1;
             text-align: end;
         }
+        .control{
+            border: none;
+
+            button{
+                padding: 5px 10px;
+                margin: 10px 0;
+                border-radius: 15px;
+                border: 2px solid black;
+                cursor: pointer;
+                font-weight: bold;
+                background-color: rgb(255, 101, 101);
+            }
+        }
     }
 
     #mis-horarios{
         width: 100%;
         margin: 30px 0;
-        padding: 0 20px;
-        border: 1px solid blue;
+        padding: 20px;
+        text-align: center;
     }
     
 }

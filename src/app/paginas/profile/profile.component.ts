@@ -4,6 +4,7 @@ import { FireAuthService } from '../../servicios/fire-auth.service';
 import { CapitalizePipe } from "../../pipes/capitalize.pipe";
 import { CommonModule } from '@angular/common';
 import { MisHorariosComponent } from '../../componentes/mis-horarios/mis-horarios.component';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -17,6 +18,7 @@ export class ProfileComponent {
   @ViewChild('horariosVCR', { read: ViewContainerRef }) horariosVCR?: ViewContainerRef;
   private misHorariosCR?: ComponentRef<MisHorariosComponent>;
 
+  private router = inject(Router);
   fireAuthService = inject(FireAuthService);
 
   ngAfterViewInit() {
@@ -31,5 +33,9 @@ export class ProfileComponent {
     this.misHorariosCR = this.horariosVCR?.createComponent(MisHorariosComponent);
   }
 
+  async CerrarSession() {
+    await this.fireAuthService.Logout();
 
+    this.router.navigate(['/bienvenida']);
+  }
 }

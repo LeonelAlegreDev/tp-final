@@ -45,8 +45,6 @@ export const routes: Routes = [
     // TODO: Falta implementar
     {
         /*
-        * Agregar        
-        * Debe contar con los datos del usuario. Nombre, Apellido, Imágenes, etc.
         * Mis horarios
         ■ Solamente los usuario con perfil Especialista
         ■ En esta sección el Especialista deberá marcar su disponibilidad horaria. Tener en
