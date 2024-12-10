@@ -7,4 +7,5 @@ export interface Turno {
     fecha: string;
     hora: string;
     estado: string;
+    especialidad: string;
 }

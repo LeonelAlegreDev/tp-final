@@ -1,7 +1,39 @@
 <div id="wrapper">
     <app-menu></app-menu>
     <div class="content">
-        <p>mis-turnos works!</p>
+        <h1>Mis turnos</h1>
+        
+        <!-- FILTROS -->
+         <div id="especialidades" #especialidadesVCR>
+            
+         </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Especialidad</th>
+                    <th>Especialista</th>
+                    <th>Editar</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if(flags.turnosListos){
+                    @for (turno of turnosFiltrados; track $index) {
+                        <tr>
+                            <td>{{ turno.fecha }}</td>
+                            <td>{{ GetHora(turno.hora) }}</td>
+                            <td>{{ turno.especialidad | capitalize}}</td>
+                            <td>{{ turno.especialista.nombre | capitalize }} {{ turno.especialista.apellido | capitalize }}</td>
+                            <td>
+                                <button (click)="EditarTurno(turno)">Editar</button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
     </div>
 
 </div>

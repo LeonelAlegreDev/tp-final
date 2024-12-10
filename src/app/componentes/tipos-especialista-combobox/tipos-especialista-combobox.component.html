@@ -1,9 +1,10 @@
 <div class="combo-box" #combobox>
-    <label for="especialidad">Ingrese la especialidad deseada:</label>
+    <label for="especialidad">{{ label }}</label>
     <span class="error">{{ errorMessage }}</span>
     <div class="row">
         <input (input)="FiltrarEspecialidades($event)" type="text" placeholder="Especialidad" id="especialidad" autocomplete="off">
         <button (click)="Confirmar()">Confirmar</button>
+        <input type="checkbox" #disable [(ngModel)]="isDisable" (change)="onCheckboxChange()" style="margin-left: 10px;">
     </div>
     <ul class="box hidden">
         @for (tipo of tipoEspFiltrada; track $index) {

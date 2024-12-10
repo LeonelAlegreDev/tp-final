@@ -5,6 +5,7 @@ import { isApprovedGuard } from './guards/is-approved.guard';
 import { isAdminGuard } from './guards/is-admin.guard';
 import { canActivate } from '@angular/fire/auth-guard';
 import { isAdminOrPacienteGuard } from './guards/is-admin-or-paciente.guard';
+import { isPacienteOrEspecialistaGuard } from './guards/is-paciente-or-especialista.guard';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: "full" },
@@ -37,7 +38,6 @@ export const routes: Routes = [
         loadComponent: () => import('./paginas/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent),
         canActivate: [loggedInGuard]
     },
-    // TODO: Modificar el calendario, para que tenga en cuenta los horarios de los especialistas
     {
         path: 'solicitar-turno',
         loadComponent: () => import('./paginas/solicitar-turno/solicitar-turno.component').then(m => m.SolicitarTurnoComponent),
@@ -46,12 +46,13 @@ export const routes: Routes = [
     {
         path: 'profile',
         loadComponent: () => import('./paginas/profile/profile.component').then(m => m.ProfileComponent),
-        canActivate: [loggedInGuard]
+        canActivate: [loggedInGuard, accountConfirmedGuard]
     },
     // TODO: Falta implementar
     {
         path: 'mis-turnos',
         loadComponent: () => import('./paginas/mis-turnos/mis-turnos.component').then(m => m.MisTurnosComponent),
+        canActivate: [loggedInGuard, accountConfirmedGuard, isPacienteOrEspecialistaGuard]
     },
     {
         path: 'mis-horarios',

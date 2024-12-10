@@ -44,6 +44,7 @@ export class CalendarioComponent {
   @Input() hastaHora: number = 23;
   @Input() paciente?: Paciente;
   @Input() especialista?: Especialista;
+  @Input() especialidad?: string;
 
   @Output() schedulesLoaded: EventEmitter<void> = new EventEmitter();
   @Output() turnoConfirmado: EventEmitter<Turno> = new EventEmitter();
@@ -153,7 +154,8 @@ export class CalendarioComponent {
           hora: hora.hora,
           especialista: this.especialista,
           paciente: this.paciente,
-          estado: 'pendiente'
+          estado: 'pendiente',
+          especialidad: this.especialista.especialidad ? this.especialista.especialidad : 'Especialidad no especificada'
         }
         this.turnoSeleccionado = turno;
 
@@ -223,7 +225,8 @@ export class CalendarioComponent {
           hora: this.horaSeleccionada.hora,
           especialista: this.especialista,
           paciente: this.paciente,
-          estado: 'pendiente'
+          estado: 'pendiente',
+          especialidad: this.especialista.especialidad ? this.especialista.especialidad : 'Especialidad no especificada'
         }
         this.turnoSeleccionado = turno;
         console.log("turno seleccionado:", turno);

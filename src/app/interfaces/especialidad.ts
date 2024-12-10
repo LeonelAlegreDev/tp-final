@@ -1,5 +1,5 @@
 export interface Especialidad {
-    id: number;
+    id: string;
     nombre: string;
     descripcion: string;
     aprobed: boolean;
