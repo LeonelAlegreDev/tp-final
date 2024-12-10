@@ -37,23 +37,18 @@ export const routes: Routes = [
         loadComponent: () => import('./paginas/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent),
         canActivate: [loggedInGuard]
     },
+    // TODO: Modificar el calendario, para que tenga en cuenta los horarios de los especialistas
     {
         path: 'solicitar-turno',
         loadComponent: () => import('./paginas/solicitar-turno/solicitar-turno.component').then(m => m.SolicitarTurnoComponent),
         canActivate: [loggedInGuard, accountConfirmedGuard, isApprovedGuard, isAdminOrPacienteGuard]
     },
-    // TODO: Falta implementar
     {
-        /*
-        * Mis horarios
-        ■ Solamente los usuario con perfil Especialista
-        ■ En esta sección el Especialista deberá marcar su disponibilidad horaria. Tener en
-        cuenta que el Especialista puede tener más de una especialidad asociada.
-        */
         path: 'profile',
         loadComponent: () => import('./paginas/profile/profile.component').then(m => m.ProfileComponent),
-        // canActivate: [loggedInGuard]
+        canActivate: [loggedInGuard]
     },
+    // TODO: Falta implementar
     {
         path: 'mis-turnos',
         loadComponent: () => import('./paginas/mis-turnos/mis-turnos.component').then(m => m.MisTurnosComponent),

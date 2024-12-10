@@ -9,6 +9,6 @@ export interface Schedule {
     idEspecialista: string;
     especialidad: string;
 }
-interface DaySchedule {
+export interface DaySchedule {
     horasDisponible: string[];
 }

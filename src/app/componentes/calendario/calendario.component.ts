@@ -7,6 +7,9 @@ import { Paciente } from '../../interfaces/paciente';
 import { Especialista } from '../../interfaces/especialista';
 import { FireAuthService } from '../../servicios/fire-auth.service';
 import { BuscadorDePacientesComponent } from '../buscador-de-pacientes/buscador-de-pacientes.component';
+import { ScheduleService } from '../../servicios/schedule.service';
+import { DaySchedule, Schedule } from '../../interfaces/schedule';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-calendario',
@@ -22,6 +25,10 @@ export class CalendarioComponent {
 
   private turnoService = inject(TurnoService);
   private fireAuthService = inject(FireAuthService);
+  
+  private scheduleService = inject(ScheduleService);
+  schedulList: Schedule[] = [];
+  schedule?: Schedule;
 
   turnos: Turno[] = [];
   turnosFiltrados: Turno[] = [];
@@ -33,25 +40,57 @@ export class CalendarioComponent {
 
   @Input() cantidadDias: number = 15;
   @Input() cantidadTurnosAleatorios: number = 40;
-  @Input() desdeHora: number = 8;
-  @Input() hastaHora: number = 19;
+  @Input() desdeHora: number = 0;
+  @Input() hastaHora: number = 23;
   @Input() paciente?: Paciente;
   @Input() especialista?: Especialista;
 
-  @Output() loaded: EventEmitter<void> = new EventEmitter();
+  @Output() schedulesLoaded: EventEmitter<void> = new EventEmitter();
   @Output() turnoConfirmado: EventEmitter<Turno> = new EventEmitter();
 
+  loadFlags = {
+    scheduleList: false,
+    turnos: false
+  }
+  loadFlagsSubject = new EventEmitter<any>();
+
+  ngOnInit() {
+    this.loadFlagsSubject.subscribe(flags => {
+      if (flags.scheduleList && flags.turnos) {
+        this.schedulesLoaded.emit();
+      }
+    });
+  }
+
+  ngAfterViewInit() {
+  }
+
+  private updateLoadFlags(flag: keyof typeof this.loadFlags, value: boolean) {
+    this.loadFlags[flag] = value;
+    if(this.loadFlags.scheduleList && this.loadFlags.turnos) {
+      this.loadFlagsSubject.emit(this.loadFlags);
+    }
+  }
   constructor() {
-    // this.turnos = this.GenerarTurnosAleatorios(this.cantidadTurnosAleatorios);    
-    
     this.turnoService.turnos$.subscribe(turnos => {
       this.turnos = turnos;
-      this.turnosFiltrados = this.turnos;      
-      this.loaded.emit();
+      this.updateLoadFlags('turnos', true);
+    });
+    this.CargarSchedules();
+  }
+
+  CargarSchedules(){
+    this.scheduleService.schedule$.subscribe(schedules => {
+      // filtrar por especialista
+      this.schedulList = schedules.filter(s => s.idEspecialista === this.especialista?.id && s.especialidad === this.especialista?.especialidad);
+      this.schedule = this.schedulList[0];
+      console.log("Schedules del especialista:", this.schedulList);
+      this.updateLoadFlags('scheduleList', true);
     });
   }
 
   FiltrarTurnos(idEspecialista: string){
+    // obtiene los filtros de los turnos
     this.turnosFiltrados = this.turnos.filter(t => t.especialista?.id === idEspecialista);
   }
 
@@ -64,6 +103,9 @@ export class CalendarioComponent {
     for (let i = 0; i < this.cantidadDias; i++) {
       const fecha = dateBuffer.toLocaleDateString('es-AR');
       const turnosDelDia = this.turnosFiltrados.filter(t => t.fecha === fecha);
+      const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+      const diaSemanaIndex = dateBuffer.getDay();
+      const diaABuscar = diasSemana[diaSemanaIndex];
 
       const  fechaObj: Fecha = {
         dia: fecha.split('/')[0],
@@ -75,11 +117,21 @@ export class CalendarioComponent {
       for(let hora = this.desdeHora; hora <= this.hastaHora; hora++) {
         // Verificar si hay un turno en la hora actual
         const turno = turnosDelDia.find(t => parseInt(t.hora) === hora);
-        
+        // hora string debe tener el formato 00:00 o 23:00 siendo hora un entero del 0 al 23
+        const horaString = hora < 10 ? `0${hora}:00` : `${hora}:00`;
+        const diaSchedule = this.schedule?.[diaABuscar as keyof Schedule] as DaySchedule;
+        const horarioDisponible = diaSchedule?.horasDisponible.includes(horaString);
+        console.log("Buscando en el schedule:", diaABuscar, horaString);
+
+        let estado = "reservado";
+        console.log("Horario disponible:", horarioDisponible);
+        console.log("Turno encontrado:", turno);
+        if(!turno && horarioDisponible) estado = "disponible";
+
         // Crear un objeto Hora según el estado del turno
         const horaObj: Hora = {
           hora: hora.toString(),
-          estado: turno ? 'reservado' : 'disponible',
+          estado: estado,
           turno: turno ? turno : null
         };
 

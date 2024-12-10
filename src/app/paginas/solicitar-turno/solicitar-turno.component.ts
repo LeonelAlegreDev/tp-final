@@ -51,6 +51,7 @@ export class SolicitarTurnoComponent {
     });
   }
 
+  // Crea la tabla de especialistas
   CreateEspecialistas(tipo: string) {
     if(this.especialistasCR) {
       this.especialistasCR?.destroy();
@@ -67,20 +68,28 @@ export class SolicitarTurnoComponent {
     });
   }
 
+  // Crea el calendario con los turnos del especialista seleccionado
   CreateCalendario(especialista: Especialista) {
+    // Si ya hay un calendario, lo destruye
     if(this.calendarioCR) {
       this.calendarioCR?.destroy();
     }
 
+    // Crear el calendario y asigna el especialista
     this.calendarioCR = this.calendarioVCR?.createComponent(CalendarioComponent);
     this.calendarioCR.instance.especialista = especialista;
 
+    this.calendarioCR.instance.CargarSchedules();
+
+    // Si el usuario es un paciente, asigna el paciente al calendario
     if(this.authService.user && this.authService.IsPaciente()) {
       this.calendarioCR.instance.paciente = this.authService.user as Paciente;
     }
 
-    this.calendarioCR.instance.loaded.subscribe(() => {
+    // Cuando se hayan cargado los datos
+    this.calendarioCR.instance.loadFlagsSubject.subscribe(() => {
       this.calendarioCR?.instance.FiltrarTurnos(especialista.id as string);
+      // this.calendarioCR?.instance.FiltrarSchedules(especialista.especialidad ?? '');
       this.calendarioCR?.instance.GenerarCalendario();
     });
   }
