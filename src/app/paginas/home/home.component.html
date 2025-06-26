@@ -1,12 +1,19 @@
 <div id="wrapper">
     <app-menu></app-menu>
-    @if (this.fireAuthService.IsEspecialista()) {
-        <p>Bienvenido Especialista</p>
-    }
-    @else if(this.fireAuthService.IsPaciente()) {
-        <p>Bienvenido Paciente</p>
-    }
-    @else if (this.fireAuthService.IsAdmin()) {
-        <p>Bienvenido Admin</p>
-    }
+    <div id="content">
+        @if (this.fireAuthService.IsEspecialista()) {
+            <p>Bienvenido Especialista</p>
+        }
+        @else if(this.fireAuthService.IsPaciente()) {
+            <p>Bienvenido Paciente</p>
+        }
+        @else if (this.fireAuthService.IsAdmin()) {
+            <p>Bienvenido Admin</p>
+        }
+        <h1>Bienvenido a la Clínica Online</h1>
+        <p>Este proyecto es una plataforma en línea para la gestión de turnos y especialidades médicas. Aquí, los especialistas pueden gestionar sus horarios y citas, los pacientes pueden reservar turnos y consultar información sobre sus especialistas, y los administradores pueden supervisar y gestionar toda la plataforma.</p>
+        <br>
+        <br>
+        <p>Seleccione una opción del menú para comenzar.</p>
+    </div>
 </div>

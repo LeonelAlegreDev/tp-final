@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FireAuthService } from '../../servicios/fire-auth.service';
 import { MenuComponent } from '../../componentes/menu/menu.component';
+import { LoaderComponent } from '../../componentes/loader/loader.component';
 
 @Component({
   selector: 'app-home',

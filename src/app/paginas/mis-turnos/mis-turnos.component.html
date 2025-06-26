@@ -7,6 +7,15 @@
          <div id="especialidades" #especialidadesVCR>
             
          </div>
+         <div id="especialista"  #especialista>
+            <label for="filtroNombre">Filtrar por especialista</label>
+            <input id="filtroNombre" type="text" placeholder="Nombre del especialista">
+         
+            <label for="filtroApellido">Filtrar por apellido</label>
+            <input id="filtroApellido" type="text" placeholder="Apellido del especialista">
+
+            <button (click)="FiltrarEspecialista()">Filtrar</button>
+        </div>
         
         <table>
             <thead>

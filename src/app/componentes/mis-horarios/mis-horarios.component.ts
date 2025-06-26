@@ -24,40 +24,9 @@ export class MisHorariosComponent {
   scheduleService = inject(ScheduleService);
 
   especialidades: any[] = [];
-  formulario :FormGroup;
+  formulario: FormGroup;
   errorMessage = "";
   modalActive = false;
-
-  // schedule: { [key: string]: { horasDisponible: string[] } } = {
-  //   Lunes: {
-  //     horasDisponible: ['08:00', '00:00'] as string[] ,
-
-  //   },
-  //   Martes: {
-  //     horasDisponible: [] as string[],
-
-  //   },
-  //   Miércoles: {
-  //     horasDisponible: [] as string[],
-
-  //   },
-  //   Jueves: {
-  //     horasDisponible: [] as string[],
-
-  //   },
-  //   Viernes: {
-  //     horasDisponible: [] as string[],
-
-  //   },
-  //   sabado: {
-  //     horasDisponible: [] as string[],
-
-  //   },
-  //   Domingo: {
-  //     horasDisponible: [] as string[],
-
-  //   }
-  // };
 
   schedule!: Schedule;
   schedules: Schedule[] = [];
@@ -84,7 +53,7 @@ export class MisHorariosComponent {
     this.CargarSchedules();
   }
 
-  async CargarSchedules(){
+  async CargarSchedules() {
     this.scheduleService.schedule$.subscribe((schedules: Schedule[]) => {
       // obtener los schedules cuyo campo idEspecialista coincida con el id del usuario
       schedules = schedules.filter(schedule => schedule.idEspecialista == this.fireAutService.user?.id);
@@ -92,31 +61,18 @@ export class MisHorariosComponent {
     });
   }
 
-  // async CargarSchedule(){
-  //   this.scheduleService.schedule$.subscribe((schedules: Schedule[]) => {
-  //     for(const schedule of schedules){
-  //       // Verificar si el schedule pertenece al especialista
-  //       if(schedule.idEspecialista == this.fireAutService.user?.id){
-  //         console.log("schedule encontrado", schedule);
-  //         this.schedule = schedule;
-  //         return;
-  //       }
-  //     }
-  //   });
-  // }
-
   async ElegirEspecialidad() {
     // Verificar que se haya elegido una especialidad
-    if(this.formulario.get('especialidad')?.value != '') {
+    if (this.formulario.get('especialidad')?.value != '') {
       this.errorMessage = "";
       let createSchedule = true;
 
       // Verifica si el usuario tiene algun schedule
-      if(this.schedules.length > 0){
+      if (this.schedules.length > 0) {
         console.log("Schedules del usuario", this.schedules);
         // Verificar si el usuario ya tiene un schedule para la especialidad elegida
-        for(const schedule of this.schedules){
-          if(schedule.especialidad == this.formulario.get('especialidad')?.value){
+        for (const schedule of this.schedules) {
+          if (schedule.especialidad == this.formulario.get('especialidad')?.value) {
             console.log("Schedule encontrado", schedule);
             this.schedule = schedule;
             createSchedule = false;
@@ -125,7 +81,7 @@ export class MisHorariosComponent {
           }
         }
       }
-      if(createSchedule){
+      if (createSchedule) {
         console.log("No se encontró un schedule para el especialista");
         const schedule: Schedule = {
           Lunes: { horasDisponible: [] },
@@ -138,12 +94,12 @@ export class MisHorariosComponent {
           idEspecialista: this.fireAutService.user?.id!,
           especialidad: this.formulario.get('especialidad')?.value
         }
-        try{
+        try {
           await this.scheduleService.Create(schedule, this.fireAutService.user?.id!);
 
           this.MostrarHorarios();
         }
-        catch(error){
+        catch (error) {
           console.error("Error al crear el schedule");
         }
       }
@@ -177,52 +133,65 @@ export class MisHorariosComponent {
     this.MostrarModal();
   }
 
-  MostrarModal(){
+  MostrarModal() {
     setTimeout(() => {
       this.modalER!.nativeElement.style.display = 'flex';
       this.modalActive = true;
     }, 10);
   }
 
-  CerrarModal(){
+  CerrarModal() {
     this.modalER!.nativeElement.style.display = 'none';
     this.modalActive = false;
   }
 
   async ConfirmarHorario() {
     // verifica que la disponibilidad se haya seleccionado
+    console.log("Confirmar horario");
+    console.log(this.bufferHorario);
+    console.log("Disponibilidad seleccionada:", this.disponibilidadER?.nativeElement.value);
+    
+    // Si la disponibilidad es "No disponible", se debe quitar el horario del schedule
+    // Si la disponibilidad es "Disponible", se debe agregar el horario al schedule
+    // Si al agregar el horario ya existe en el schedule, no se debe agregar nuevamente y
+    // se debe mostrar un mensaje de error
+    if (this.disponibilidadER?.nativeElement.value == "No disponible") {
+      // Verificar si el horario ya existe en el schedule
+      const daySchedule = this.schedule[this.bufferHorario.dia as keyof Schedule];
+      if (typeof daySchedule !== 'string' && daySchedule.horasDisponible.includes(this.bufferHorario.hora)) {
+        // Eliminar el horario del schedule
+        const index = daySchedule.horasDisponible.indexOf(this.bufferHorario.hora);
+        if (index > -1) {
+          daySchedule.horasDisponible.splice(index, 1);
+          console.log("Horario eliminado", this.bufferHorario.hora);
 
-    if(this.disponibilidadER?.nativeElement.value !== ''){
-      console.log("Confirmar horario");
-      console.log(this.bufferHorario);
-      // insertar los datos en this.schedule
-      if (this.schedule) {
-        const daySchedule = this.schedule[this.bufferHorario.dia as keyof Schedule];
-        if (typeof daySchedule !== 'string') {
-          daySchedule.horasDisponible.push(this.bufferHorario.hora);
-          console.log("daySchedule actualizado", daySchedule);
+          // Actualizar this.schedule con el nuevo horario
+          console.log("this.schedule antes de actualizar:", this.schedule);
         }
+      } else {
+        console.error("El horario no existe en el schedule");
+      }
+    } else if (this.disponibilidadER?.nativeElement.value == "Disponible") {
+      // Verificar si el horario ya existe en el schedule
+      const daySchedule = this.schedule[this.bufferHorario.dia as keyof Schedule];
+      if (typeof daySchedule !== 'string' && !daySchedule.horasDisponible.includes(this.bufferHorario.hora)) {
+        // Agregar el horario al schedule
+        daySchedule.horasDisponible.push(this.bufferHorario.hora);
+        console.log("Horario agregado", this.bufferHorario.hora);
 
-        try {
-          await this.scheduleService.Update(this.schedule, this.schedule.idEspecialista);
-          console.log("Schedule actualizado en Firestore");
-          this.CerrarModal();
-        } catch (error) {
-          console.error("Error al actualizar el schedule en Firestore", error);
-        }
+        // Actualizar this.schedule con el nuevo horario
+        console.log("this.schedule antes de actualizar:", this.schedule);
+
+      } else {
+        console.error("El horario ya existe en el schedule");
       }
     }
-    else{
-      console.log("Debe seleccionar una disponibilidad");
-    }
   }
-
-
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
     const modal = this.modalER?.nativeElement.querySelector('.modal-card');
-        
+
     if (this.modalER?.nativeElement && !modal.contains(event.target) && this.modalActive) {
       this.CerrarModal();
     }

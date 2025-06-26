@@ -38,8 +38,7 @@ export class SignupComponent {
   CreateLoader() {
     this.loaderCR = this.vcr.createComponent(LoaderComponent);
     // Se ejecuta cuando el loader se ha cargado completamente
-    this.loaderCR.instance.loaded.subscribe(() => {
-    });
+    this.loaderCR.instance.loaded.subscribe(() => {});
   }
 
   CreateFormPac() {

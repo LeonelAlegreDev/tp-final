@@ -25,3 +25,10 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## To do:
+### Especialista
+1. Mostrar turnos aceptados, poder filtrar por pendiente y atendido
+
+### Paciente 
+1. Mis turnos: Filtrar por especialidad y nombre y apellido, deben funcionar coordinadas

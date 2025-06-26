@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Paciente } from '../interfaces/paciente';
-import { createUserWithEmailAndPassword, Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
+import { createUserWithEmailAndPassword, Auth, signInWithEmailAndPassword, onAuthStateChanged } from '@angular/fire/auth';
 import { Especialista } from '../interfaces/especialista';
 import { Admin } from '../interfaces/admin';
 import { sendEmailVerification } from 'firebase/auth';
+import firebase from 'firebase/compat/app';
 
 @Injectable({
   providedIn: 'root'
@@ -99,9 +100,22 @@ export class FireAuthService {
       throw e;
     }
   }
-  IsVerified() {
-    return this.auth.currentUser?.emailVerified;
+
+  async IsVerified(): Promise<boolean> {
+    console.log("Validando si el email esta verificado");
+    await this.waitForAuthState(); // Ensure auth state is ready
+
+    if (this.auth.currentUser) {
+      console.log("Usuario logueado: ", this.auth.currentUser.email);
+      await this.auth.currentUser.reload(); // Refresh the current user
+      const isVerified = this.auth.currentUser.emailVerified || false;
+      console.log("Email verificado: ", isVerified);
+      return isVerified;
+    }
+    console.log("No hay usuario logueado");
+    return false; // Default to false if no user is logged in
   }
+
   IsEspecialista(): boolean {
     return this.userRole === "especialista";
   }
@@ -145,20 +159,19 @@ export class FireAuthService {
     return undefined;
   }
 
-  private LoadSession(){
+  private async LoadSession() {
     const sessionData = localStorage.getItem("session");
-    if(sessionData){
+    if (sessionData) {
       const session = JSON.parse(sessionData);
       const currentTime = new Date().getTime();
       const sessionDuration = 60 * 60 * 1000; // 60 minutos
 
       // si la sesion no expiro
-      if(currentTime - session.timestamp < sessionDuration){
+      if (currentTime - session.timestamp < sessionDuration) {
         this.isLoggedIn = session.isLoggedIn;
         this.user = session.user;
-        this.userRole = session.userRole;
-      }
-      else {
+        this.userRole = session.userRole;        
+      } else {
         this.ClearSession();
       }
     }
@@ -178,5 +191,13 @@ export class FireAuthService {
 
   private ClearSession(){
     localStorage.removeItem("session");
+  }
+
+  private waitForAuthState(): Promise<firebase.User | null> {
+    return new Promise((resolve) => {
+      this.auth.onAuthStateChanged((user) => {
+        resolve(user as firebase.User | PromiseLike<firebase.User | null> | null);
+      });
+    });
   }
 }

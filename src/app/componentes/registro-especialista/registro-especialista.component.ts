@@ -8,6 +8,8 @@ import { EspecialistaService } from '../../servicios/especialista.service';
 import { inject } from '@angular/core';
 import { Especialidad } from '../../interfaces/especialidad';
 import { CaptchaComponent } from '../captcha/captcha.component';
+import { ScheduleService } from '../../servicios/schedule.service';
+import { Schedule, DaySchedule } from '../../interfaces/schedule';
 
 @Component({
   selector: 'app-registro-especialista',
@@ -27,6 +29,7 @@ export class RegistroEspecialistaComponent {
   @ViewChild('content', { read: ViewContainerRef }) contentVCR!: ViewContainerRef;
   captchaCR?: ComponentRef<CaptchaComponent>
   especialistaService: EspecialistaService = inject(EspecialistaService);
+  private scheduleService = inject(ScheduleService);
   accountForm: FormGroup;
   personalForm: FormGroup;
   fotosForm: FormGroup;
@@ -334,6 +337,21 @@ export class RegistroEspecialistaComponent {
     // Crear el documento en la base de datos
     const res = await this.especialistaService.Create(this.fireAuthService.user! as Especialista);
     console.log("Especialista creado en la base de datos");
+
+    // Crear el horario del especialista
+    const daySchedule: DaySchedule = { horasDisponible: [] };
+    const schedule: Schedule = {
+      idEspecialista: this.fireAuthService.user!.id as string,
+      especialidad: especialista.especialidad as string,
+      Lunes: daySchedule,
+      Martes: daySchedule,
+      Miércoles: daySchedule,
+      Jueves: daySchedule,
+      Viernes: daySchedule,
+      Sabado: daySchedule,
+      Domingo: daySchedule,
+    }
+    await this.scheduleService.Create(schedule, this.fireAuthService.user!.id as string);
 
     // Emitir evento de éxito
     this.success.emit();
