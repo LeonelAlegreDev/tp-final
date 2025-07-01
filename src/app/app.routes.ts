@@ -48,15 +48,10 @@ export const routes: Routes = [
         loadComponent: () => import('./paginas/profile/profile.component').then(m => m.ProfileComponent),
         canActivate: [LoggedInGuard, accountConfirmedGuard]
     },
-    // TODO: Falta implementar
     {
         path: 'mis-turnos',
         loadComponent: () => import('./paginas/mis-turnos/mis-turnos.component').then(m => m.MisTurnosComponent),
         canActivate: [LoggedInGuard, accountConfirmedGuard, isPacienteOrEspecialistaGuard]
-    },
-    {
-        path: 'mis-horarios',
-        loadComponent: () => import('./componentes/mis-horarios/mis-horarios.component').then(m => m.MisHorariosComponent),
     },
     { path: '**', redirectTo: '/error' }
 ];

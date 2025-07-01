@@ -53,4 +53,17 @@ export class PacienteService {
       });
     });
   }
+
+  async DeletePaciente(id: string): Promise<void> {
+    try {
+      // Crea una referencia al documento del paciente
+      const docRef = doc(this.pacientesCollectionRef, id);
+      // Elimina el documento
+      await setDoc(docRef, {}, { merge: true });
+      console.log('Paciente eliminado exitosamente');
+    } catch (error) {
+      console.error('Error al eliminar el paciente:', error);
+      throw error;
+    }
+  }
 }

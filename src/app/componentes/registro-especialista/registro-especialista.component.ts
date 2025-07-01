@@ -257,9 +257,6 @@ export class RegistroEspecialistaComponent {
               this.PrevStep();
               this.PrevStep();
             }
-            if (this.fireAuthService.user) {
-              await this.fireAuthService.DeleteUser();
-            }
             console.log(e.message)
             throw e;
           }
@@ -309,9 +306,6 @@ export class RegistroEspecialistaComponent {
         this.accountForm.get('email')?.setErrors({ used: true });
         this.PrevStep();
         this.PrevStep();
-      }
-      if (this.fireAuthService.user) {
-        await this.fireAuthService.DeleteUser();
       }
       console.log(error.message)
       return;

@@ -27,6 +27,12 @@ export class MisTurnosComponent {
   flags = {
     turnosListos: false,
   }
+
+  filtros = {
+    especialidad: '',
+    nombreEspecialista: '',
+    apellidoEspecialista: '',
+  }
   constructor() {
     this.turnoService.turnos$.subscribe(turnos => {
       this.turnos = turnos.filter(turno => turno.paciente.id === this.fireAuthService.user?.id);
@@ -76,6 +82,7 @@ export class MisTurnosComponent {
 
   FiltrarTurnos(especialidad: string){
     this.turnosFiltrados = this.turnos.filter(turno => turno.especialista.especialidad?.toLowerCase() === especialidad.toLocaleLowerCase());
+
   }
   CancelarFiltro(){
     this.turnosFiltrados = this.turnos;

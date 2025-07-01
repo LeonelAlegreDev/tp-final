@@ -256,12 +256,11 @@ export class FormularioRegistroComponent {
         this.email?.setErrors({ used: true });
         this.PrevStep();
         this.PrevStep();
+        console.log(e.message)
       }
-      if (this.fireAuthService.user) {
-        await this.fireAuthService.DeleteUser();
+      else{
+        console.error("Error al crear el paciente:");
       }
-      console.log(e.message)
-      throw e;
     }
   }
 

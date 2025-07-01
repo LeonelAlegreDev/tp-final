@@ -55,15 +55,8 @@
             }
             <div class="row control">
                 <button (click)="CerrarSession()">Cerrar sesión</button>
-                <button (click)="CerrarSession()">Cerrar sesión</button>
+                <!-- <button (click)="DeleteAccount()">Borrar cuenta</button> -->
             </div>
         </section>
-        <!-- MIS HORARIOS -->
-        @if(fireAuthService.IsEspecialista()){
-        <section id="mis-horarios">
-            <h2>Mis Horarios</h2>
-            <div #horariosVCR></div>
-        </section>
-        }
     </div>
 </div>

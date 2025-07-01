@@ -3,7 +3,7 @@ import { Paciente } from '../interfaces/paciente';
 import { createUserWithEmailAndPassword, Auth, signInWithEmailAndPassword, onAuthStateChanged } from '@angular/fire/auth';
 import { Especialista } from '../interfaces/especialista';
 import { Admin } from '../interfaces/admin';
-import { sendEmailVerification } from 'firebase/auth';
+import { sendEmailVerification, deleteUser } from 'firebase/auth';
 import firebase from 'firebase/compat/app';
 
 @Injectable({
@@ -50,20 +50,6 @@ export class FireAuthService {
           break;
       }
       throw new Error(this.msjError);
-    }
-  }
-
-  async DeleteUser() {
-    try {
-      if (this.user) {
-        await this.auth.currentUser?.delete();
-        this.isLoggedIn = false;
-        this.user = undefined;
-        this.userRole = undefined;
-        this.ClearSession();
-      }
-    } catch (e) {
-      throw e;
     }
   }
 
@@ -186,7 +172,6 @@ export class FireAuthService {
     };
 
     localStorage.setItem("session", JSON.stringify(sessionData));
-    console.log("Session guardada", sessionData);
   }
 
   private ClearSession(){
@@ -199,5 +184,23 @@ export class FireAuthService {
         resolve(user as firebase.User | PromiseLike<firebase.User | null> | null);
       });
     });
+  }
+
+
+  async DeleteAccount(): Promise<void> {
+    const user = this.auth.currentUser;
+    if (!user) {
+        throw new Error('No hay usuario autenticado.');
+    }
+    const userId = user.uid;
+
+    console.log('Eliminando cuenta de fire auth:', user);
+    try {
+      await deleteUser(user);
+      console.log('Cuenta eliminada de fire auth:', userId);
+    } catch (error) {
+        console.error('Error al borrar la cuenta:', error);
+        throw error;
+    }
   }
 }
