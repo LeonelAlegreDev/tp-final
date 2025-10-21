@@ -114,6 +114,8 @@ export class LoginComponent {
   }
   
   MostrarCuentas(){
+    if(!this.cuentas) return;
+    
     if(this.cuentas.nativeElement.classList.contains('active')){
       return;
     }

@@ -3,12 +3,12 @@ import { LoaderComponent } from "../../componentes/loader/loader.component";
 import { FormularioRegistroComponent } from "../../componentes/formulario-registro/formulario-registro.component";
 import { ModalComponent } from '../../componentes/modal/modal.component';
 import { RegistroEspecialistaComponent } from '../../componentes/registro-especialista/registro-especialista.component';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })

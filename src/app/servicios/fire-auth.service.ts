@@ -173,7 +173,6 @@ export class FireAuthService {
     };
 
     localStorage.setItem("session", JSON.stringify(sessionData));
-    console.log("Session guardada", sessionData);
   }
 
   private ClearSession(){
