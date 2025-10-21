@@ -2,12 +2,11 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { FireAuthService } from '../servicios/fire-auth.service';
 
-export const accountConfirmedGuard: CanActivateFn = async (route, state) => {
+export const accountConfirmedGuard: CanActivateFn = (route, state) => {
   const fireAuthService = inject(FireAuthService);
   const router = inject(Router);
 
   if(fireAuthService.user?.email === 'especialista1@email.com' || 
-      fireAuthService.user?.email === 'especialista2@email.com' || 
       fireAuthService.user?.email === 'paciente1@email.com' ||
       fireAuthService.user?.email === 'admin1@email.com')
   {
@@ -15,7 +14,7 @@ export const accountConfirmedGuard: CanActivateFn = async (route, state) => {
     return true;
   }
 
-  if(await fireAuthService.IsVerified()){
+  if(fireAuthService.IsVerified()){
     return true;
   }
   console.log("Acceso denegado, cuenta no verificada");

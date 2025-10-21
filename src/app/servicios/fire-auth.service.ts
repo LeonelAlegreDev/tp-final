@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Paciente } from '../interfaces/paciente';
-import { createUserWithEmailAndPassword, Auth, signInWithEmailAndPassword, onAuthStateChanged } from '@angular/fire/auth';
+import { createUserWithEmailAndPassword, Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
 import { Especialista } from '../interfaces/especialista';
 import { Admin } from '../interfaces/admin';
-import { sendEmailVerification, deleteUser } from 'firebase/auth';
-import firebase from 'firebase/compat/app';
+import { sendEmailVerification } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +52,20 @@ export class FireAuthService {
     }
   }
 
+  async DeleteUser() {
+    try {
+      if (this.user) {
+        await this.auth.currentUser?.delete();
+        this.isLoggedIn = false;
+        this.user = undefined;
+        this.userRole = undefined;
+        this.ClearSession();
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
+
   async Login(email: string, password: string): Promise<any> {
     try {
       const credentials = await signInWithEmailAndPassword(this.auth, email, password);
@@ -86,22 +99,9 @@ export class FireAuthService {
       throw e;
     }
   }
-
-  async IsVerified(): Promise<boolean> {
-    console.log("Validando si el email esta verificado");
-    await this.waitForAuthState(); // Ensure auth state is ready
-
-    if (this.auth.currentUser) {
-      console.log("Usuario logueado: ", this.auth.currentUser.email);
-      await this.auth.currentUser.reload(); // Refresh the current user
-      const isVerified = this.auth.currentUser.emailVerified || false;
-      console.log("Email verificado: ", isVerified);
-      return isVerified;
-    }
-    console.log("No hay usuario logueado");
-    return false; // Default to false if no user is logged in
+  IsVerified() {
+    return this.auth.currentUser?.emailVerified;
   }
-
   IsEspecialista(): boolean {
     return this.userRole === "especialista";
   }
@@ -145,19 +145,20 @@ export class FireAuthService {
     return undefined;
   }
 
-  private async LoadSession() {
+  private LoadSession(){
     const sessionData = localStorage.getItem("session");
-    if (sessionData) {
+    if(sessionData){
       const session = JSON.parse(sessionData);
       const currentTime = new Date().getTime();
       const sessionDuration = 60 * 60 * 1000; // 60 minutos
 
       // si la sesion no expiro
-      if (currentTime - session.timestamp < sessionDuration) {
+      if(currentTime - session.timestamp < sessionDuration){
         this.isLoggedIn = session.isLoggedIn;
         this.user = session.user;
-        this.userRole = session.userRole;        
-      } else {
+        this.userRole = session.userRole;
+      }
+      else {
         this.ClearSession();
       }
     }
@@ -172,35 +173,10 @@ export class FireAuthService {
     };
 
     localStorage.setItem("session", JSON.stringify(sessionData));
+    console.log("Session guardada", sessionData);
   }
 
   private ClearSession(){
     localStorage.removeItem("session");
-  }
-
-  private waitForAuthState(): Promise<firebase.User | null> {
-    return new Promise((resolve) => {
-      this.auth.onAuthStateChanged((user) => {
-        resolve(user as firebase.User | PromiseLike<firebase.User | null> | null);
-      });
-    });
-  }
-
-
-  async DeleteAccount(): Promise<void> {
-    const user = this.auth.currentUser;
-    if (!user) {
-        throw new Error('No hay usuario autenticado.');
-    }
-    const userId = user.uid;
-
-    console.log('Eliminando cuenta de fire auth:', user);
-    try {
-      await deleteUser(user);
-      console.log('Cuenta eliminada de fire auth:', userId);
-    } catch (error) {
-        console.error('Error al borrar la cuenta:', error);
-        throw error;
-    }
   }
 }

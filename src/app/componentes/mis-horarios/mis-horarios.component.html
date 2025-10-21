@@ -1,0 +1,81 @@
+<div id="mis-horarios">
+    <!-- ESPECIALIDAD -->
+    <div class="especialidad">
+        <label class="label">Especialidad:</label>
+        <div class="row" [formGroup]="formulario">
+            <select formControlName="especialidad">
+                @for (especialidad of especialidades; track $index) {
+                    <option value="{{especialidad}}">{{ especialidad | capitalize }}</option>
+                }
+            </select>
+            <button class="confirmar" (click)="ElegirEspecialidad()">Confirmar</button>
+        </div>
+        <span class="error">{{ errorMessage }}</span>
+    </div>
+
+    <!-- HORARIOS -->
+     <div id="horarios" #horarios>
+        <h2>Disponibilidad</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th style="opacity: 0;">Horas</th>
+                    <th>Lunes</th>
+                    <th>Martes</th>
+                    <th>Miércoles</th>
+                    <th>Jueves</th>
+                    <th>Viernes</th>
+                    <th>Sábado</th>
+                    <th>Domingo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let i of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]">
+                    <td>{{ i }}:00</td>
+                    <td (click)="SeleccionarHorario(i, 'Lunes')" [ngClass]="{'disponible': ObtenerDisponibilidad(i, 'Lunes') === 'Disponible'}">{{ ObtenerDisponibilidad(i, 'Lunes') }}</td>
+                    <td (click)="SeleccionarHorario(i, 'Martes')" [ngClass]="{'disponible': ObtenerDisponibilidad(i, 'Martes') === 'Disponible'}">{{ ObtenerDisponibilidad(i, 'Martes') }}</td>
+                    <td (click)="SeleccionarHorario(i, 'Miércoles')" [ngClass]="{'disponible': ObtenerDisponibilidad(i, 'Miércoles') === 'Disponible'}">{{ ObtenerDisponibilidad(i, 'Miércoles') }}</td>
+                    <td (click)="SeleccionarHorario(i, 'Jueves')" [ngClass]="{'disponible': ObtenerDisponibilidad(i, 'Jueves') === 'Disponible'}">{{ ObtenerDisponibilidad(i, 'Jueves') }}</td>
+                    <td (click)="SeleccionarHorario(i, 'Viernes')" [ngClass]="{'disponible': ObtenerDisponibilidad(i, 'Viernes') === 'Disponible'}">{{ ObtenerDisponibilidad(i, 'Viernes') }}</td>
+                    <td (click)="SeleccionarHorario(i, 'Sábado')" [ngClass]="{'disponible': ObtenerDisponibilidad(i, 'Sábado') === 'Disponible'}">{{ ObtenerDisponibilidad(i, 'Sábado') }}</td>
+                    <td (click)="SeleccionarHorario(i, 'Domingo')" [ngClass]="{'disponible': ObtenerDisponibilidad(i, 'Domingo') === 'Disponible'}">{{ ObtenerDisponibilidad(i, 'Domingo') }}</td>
+                </tr>
+            </tbody>
+        </table>
+     </div>
+
+     <div id="modal" #modal>
+        <div class="modal-card">
+            <div class="modal-head">
+                <h3>Modificar horario</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <span class="label">Día:</span>
+                    <span class="valor">{{ bufferHorario.dia }}</span>
+                </div>
+                <div class="row">
+                    <span class="label">Hora:</span>
+                    <span class="valor">{{ bufferHorario.hora }}</span>
+                </div>
+                <div class="row">
+                    <span class="label">Especialidad</span>
+                    <span class="valor">{{ bufferHorario.especialidad }}</span>
+                </div>
+                <div class="row">
+                    <label for="disponibilidad">Disponibilidad:</label>
+                    <select id="disponibilidad" #disponibilidad>
+                        <option value="Disponible">Disponible</option>
+                        <option value="No disponible">No disponible</option>
+                    </select>
+                </div>
+
+                <div class="row" style="margin-top: 10px;">
+                    <button (click)="CerrarModal()">Cancelar</button>
+                    <button (click)="ConfirmarHorario()">Confirmar</button>
+                </div>
+            </div>
+        </div>
+
+     </div>
+</div>

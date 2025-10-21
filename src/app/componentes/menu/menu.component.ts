@@ -49,8 +49,6 @@ export class MenuComponent {
     this.isCollapsed = !this.isCollapsed;
     // Guarda el estado de isCollapsed en localStorage
     localStorage.setItem('isCollapsed', this.isCollapsed.toString());
-
-    console.log("Usuario aprobado:", this.fireAuthService.IsApproved());
   }
 
 }

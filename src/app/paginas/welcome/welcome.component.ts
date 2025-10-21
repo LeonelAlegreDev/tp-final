@@ -12,9 +12,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 export class WelcomeComponent {
   isComponentReady = false;
 
-  ngAfterViewInit(){
-    Promise.resolve().then(() => { // <-- Envuelve el cambio en una promesa
-      this.isComponentReady = true;
-    });
+  constructor() {
+    this.isComponentReady = true;
   }
 }

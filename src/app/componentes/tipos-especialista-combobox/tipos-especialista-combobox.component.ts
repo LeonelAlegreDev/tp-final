@@ -73,13 +73,18 @@ export class TiposEspecialistaComboboxComponent {
     const input = event.target as HTMLInputElement;
     const valor = input.value.toLowerCase();
 
+    // Filtra las especialidades que coincidan con el valor ingresado
+    console.log('tiposEspFiltrada', this.tipoEspFiltrada);
+    console.log('tiposEsp', this.tipoEspecialistas);
+
     this.tipoEspFiltrada = this.tipoEspecialistas.filter((especialidad: any) =>
       especialidad.nombre.toLowerCase().includes(valor)
     );
+
+    console.log('tiposEspFiltrada', this.tipoEspFiltrada);
   }
 
   SelectTipo(tipo: string){
-    console.log('Seleccionando tipo:', tipo);
     const input = this.comboboxER?.nativeElement.querySelector('input');
     const capitalizePipe = new CapitalizePipe();
     input.value = capitalizePipe.transform(tipo);

@@ -337,6 +337,9 @@ export class RegistroAdminComponent {
         this.PrevStep();
         this.PrevStep();
       }
+      if(this.fireAuthService.user){
+        await this.fireAuthService.DeleteUser();
+      }
       console.log(e.message)
       throw e;
     }
